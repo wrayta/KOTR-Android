@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="topCenterKnightView" type="id"/>
+    <item name="topRightKnightView" type="id"/>
+    <item name="topLeftKnightView" type="id"/>
+    <item name="bottomRightKnightView" type="id"/>
+    <item name="bottomLeftKnightView" type="id"/>
+    <item name="plainShieldsView" type="id"/>
+    <item name="patternedShieldsView" type="id"/>
+</resources>

@@ -1,29 +1,28 @@
 package com.example.thomas.kotr_android;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
-import android.provider.Settings;
-import android.support.v7.app.ActionBar;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
-import android.util.Log;
 import android.view.Display;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 //import Gameplay.Knight.DisplayKnight;
 //import Gameplay.Knight.Knight;
 //import Gameplay.Life.LifeController;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import Gameplay.Knight.KnightFactory;
 import Gameplay.Life.LifeSprite;
 import Gameplay.Score.ScoreSprite;
+import Gameplay.Shield.ShieldFactory;
 //import Gameplay.Pattern.DisplayPattern;
 //import Gameplay.Pattern.PatternKey;
 //import Gameplay.Timer.TimerController;
@@ -54,10 +53,21 @@ public class MainActivity extends AppCompatActivity {
     private Integer lives[] = {R.drawable.life3, R.drawable.life2, R.drawable.life1};
     private int currLife = 0;
 
+    private int width;
+    private int height;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Screen Dimensions
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        width = size.x;
+        height = size.y;
+//        Log.d("WIDTH", "value: " + width);
 
         doStageSetup();
     }
@@ -67,7 +77,21 @@ public class MainActivity extends AppCompatActivity {
         setupLives();
         setupPlainShieldsInFrame();
         setupPlainKnights();
+        List<Integer> patternedKnightsList = randomizePatternedKnights();
+        setupPatternedKnights(patternedKnightsList);
+        List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
+        setupPatternedShieldsInFrame(patternedShieldsList);
 
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+//                setupPatternedKnights();
+            }
+        }, 2000);
+//        setupPatternedKnights();
     }
 
     private void setupScore() {
@@ -106,87 +130,107 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPlainShieldsInFrame() {
-        ImageView plainShieldsView = new ImageView(this);
-        RelativeLayout.LayoutParams plainShieldLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        plainShieldLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
-        Bitmap plainShield1 = BitmapFactory.decodeResource(getResources(), R.drawable.plain_shield_v2);
-        Bitmap plainShield2 = BitmapFactory.decodeResource(getResources(), R.drawable.plain_shield_v2);
-        Bitmap plainShield3 = BitmapFactory.decodeResource(getResources(), R.drawable.plain_shield_v2);
-        Bitmap plainShield4 = BitmapFactory.decodeResource(getResources(), R.drawable.plain_shield_v2);
-        Bitmap plainShield5 = BitmapFactory.decodeResource(getResources(), R.drawable.plain_shield_v2);
+        int[] plainShields = {R.drawable.plain_shield_v2, R.drawable.plain_shield_v2,
+            R.drawable.plain_shield_v2, R.drawable.plain_shield_v2, R.drawable.plain_shield_v2};
 
-        Bitmap plainShieldBlock = Bitmap.createBitmap(plainShield1.getWidth() * 5, plainShield1.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas plainShieldCanvas = new Canvas(plainShieldBlock);
-        plainShieldCanvas.drawBitmap(plainShield1, 0, 0, null);
-        plainShieldCanvas.drawBitmap(plainShield2, plainShield1.getWidth(), 0, null);
-        plainShieldCanvas.drawBitmap(plainShield3, plainShield2.getWidth() * 2, 0, null);
-        plainShieldCanvas.drawBitmap(plainShield4, plainShield3.getWidth() * 3, 0, null);
-        plainShieldCanvas.drawBitmap(plainShield5, plainShield4.getWidth() * 4, 0, null);
-
-        plainShieldsView.setImageBitmap(plainShieldBlock);
-        plainShieldsView.setLayoutParams(plainShieldLayoutParams);
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
+
+        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.plainShieldsView, plainShields);
+        ImageView plainShieldsView = shieldFactory.createShields();
+
         layout.addView(plainShieldsView);
+
     }
 
     private void setupPlainKnights() {
 
-        // Screen Dimensions
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-//        Log.d("WIDTH", "value: " + width);
-
         // Main layout of game
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
-        // Top Center Knight
-        ImageView topCenterKnightView = new ImageView(this);
-        RelativeLayout.LayoutParams topCenterKnightLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        topCenterKnightLayoutParams.leftMargin = (int)(0.5 * width) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()));
-        topCenterKnightLayoutParams.topMargin = (int)((1.0 / 3.0) * height) - (getResources().getDrawable(R.drawable.score0).getIntrinsicHeight() + getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight());
-//        topCenterKnightLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        topCenterKnightView.setImageResource(R.drawable.knight_three_intro_resized_v2);
-        topCenterKnightView.setLayoutParams(topCenterKnightLayoutParams);
-        layout.addView(topCenterKnightView);
+        KnightFactory knightFactory = new KnightFactory(this, KNIGHTS_IN_PATTERN, width, height);
+        List<ImageView> knightViews = knightFactory.createKnights();
 
-        // Top Left Knight
-        ImageView topLeftKnightView = new ImageView(this);
-        RelativeLayout.LayoutParams topLeftKnightLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        topLeftKnightLayoutParams.leftMargin = (int)((1.0 / 3.0) * width) - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth();
-        topLeftKnightLayoutParams.topMargin = (int)((1.0 / 3.0) * height) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
-        topLeftKnightView.setImageResource(R.drawable.knight_three_intro_resized_v2);
-        topLeftKnightView.setLayoutParams(topLeftKnightLayoutParams);
-        layout.addView(topLeftKnightView);
+        for(int i = 0; i < knightViews.size(); i++) {
+            layout.addView(knightViews.get(i));
+        }
 
-        // Top Right Knight
-        ImageView topRightKnightView = new ImageView(this);
-        RelativeLayout.LayoutParams topRightKnightLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        topRightKnightLayoutParams.leftMargin = width - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth();
-        topRightKnightLayoutParams.topMargin = (int)((1.0 / 3.0) * height) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
-        topRightKnightView.setImageResource(R.drawable.knight_three_intro_resized_v2);
-        topRightKnightView.setLayoutParams(topRightKnightLayoutParams);
-        layout.addView(topRightKnightView);
+    }
 
-        // Bottom Left Knight
-        ImageView bottomLeftKnightView = new ImageView(this);
-        RelativeLayout.LayoutParams bottomLeftKnightLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        bottomLeftKnightLayoutParams.leftMargin = (int)((1.0 / 3.0) * width) - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth();
-        bottomLeftKnightLayoutParams.topMargin = (int)((2.0 / 3.0) * height) - (getResources().getDrawable(R.drawable.gold_frame).getIntrinsicHeight() + (int)((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
-        bottomLeftKnightView.setImageResource(R.drawable.knight_three_intro_resized_v2);
-        bottomLeftKnightView.setLayoutParams(bottomLeftKnightLayoutParams);
-        layout.addView(bottomLeftKnightView);
+    private List<Integer> randomizePatternedKnights() {
+        Random rng = new Random();
+        List<Integer> generated = new ArrayList<Integer>();
 
-        // Bottom Right Knight
-        ImageView bottomRightKnightView = new ImageView(this);
-        RelativeLayout.LayoutParams bottomRightKnightLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        bottomRightKnightLayoutParams.leftMargin = width - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth();
-        bottomRightKnightLayoutParams.topMargin = (int)((2.0 / 3.0) * height) - (getResources().getDrawable(R.drawable.gold_frame).getIntrinsicHeight() + (int)((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
-        bottomRightKnightView.setImageResource(R.drawable.knight_three_intro_resized_v2);
-        bottomRightKnightView.setLayoutParams(bottomRightKnightLayoutParams);
-        layout.addView(bottomRightKnightView);
+        for(int i = 0; i < KNIGHTS_IN_PATTERN; i++) {
+            while(true) {
+                Integer next = rng.nextInt(TOTAL_KNIGHT_SPRITES);
+                if(!generated.contains(next)) {
+                    generated.add(next);
+                    break;
+                }
+            }
+        }
+
+        return generated;
+
+//        int[] currentPatternedKnights = new int[KNIGHTS_IN_PATTERN];     // ONLY THE CURRENT LEVEL KNIGHT SPRITES
+//        int[] currentPatternShieldsInFrame = new int[KNIGHTS_IN_PATTERN];
+//        int[] currentPatternShieldsInFrameOrder = new int[KNIGHTS_IN_PATTERN];
+//        PatternOrOrderRandomizer randomizer = new PatternOrOrderRandomizer(0, TOTAL_KNIGHT_SPRITES - 1); // UTILITY FOR RANDOMIZING THE SHIELD PATTERNS AND ORDER
+//
+//
+//
+//        currentPatternShieldsInFrame = randomizer.randomizePatternOrOder(KNIGHTS_IN_PATTERN, currentPatternedKnights); // RANDOMLY SELECTS FROM DIFFERENT PATTERNED SPRITES
+//
+//        randomizer = new PatternOrOrderRandomizer(0, KNIGHTS_IN_PATTERN - 1);
+//
+//        currentPatternShieldsInFrameOrder = randomizer.randomizePatternOrOderSecond(KNIGHTS_IN_PATTERN, currentPatternShieldsInFrame); // RANDOMIZES THE ORDER OF THE RANDOMIZED SPRITE PATTERN SELECTION
+
+    }
+
+    private List<Integer> randomizePatternedShieldsInFrame(List<Integer> randomizedPatternedKnightsList) {
+
+        Random rng = new Random();
+        List<Integer> generated = new ArrayList<Integer>();
+
+        for(int i = 0; i < KNIGHTS_IN_PATTERN; i++) {
+            while(true) {
+                Integer next = rng.nextInt(TOTAL_KNIGHT_SPRITES);
+                if(!generated.contains(next) && randomizedPatternedKnightsList.contains(next)) {
+                    generated.add(next);
+                    break;
+                }
+            }
+        }
+
+        return generated;
+
+    }
+
+    private void setupPatternedShieldsInFrame(List<Integer> patternedShieldList) {
+        int[] allFrameShields = {R.drawable.shield_1, R.drawable.shield_2, R.drawable.shield_3,
+                R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
+                R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
+
+        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, patternedShieldList);
+        ImageView patternedShieldsView = shieldFactory.createShields();
+
+        layout.addView(patternedShieldsView);
+    }
+
+    private void setupPatternedKnights(List<Integer> patternedKnightsList) {
+        int[] allPatternedKnights =  {R.drawable.shield_1_feet_even, R.drawable.shield_2_feet_even,
+                R.drawable.shield_3_feet_even, R.drawable.shield_4_feet_even, R.drawable.shield_5_feet_even,
+                R.drawable.shield_6_feet_even, R.drawable.shield_7_feet_even, R.drawable.shield_8_feet_even};  // ALL OF THE POSSIBLE KNIGHT SPRITES TO LOAD
+
+        int[] knightViews = {R.id.topCenterKnightView, R.id.topLeftKnightView, R.id.topRightKnightView,
+                R.id.bottomLeftKnightView, R.id.bottomRightKnightView};
+
+        for(int i = 0; i < KNIGHTS_IN_PATTERN; i++) {
+            ImageView iv = (ImageView) findViewById(knightViews[i]);
+            iv.setImageResource(allPatternedKnights[patternedKnightsList.get(i)]);
+        }
     }
 }
