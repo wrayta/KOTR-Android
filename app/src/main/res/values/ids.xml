@@ -7,4 +7,5 @@
     <item name="bottomLeftKnightView" type="id"/>
     <item name="plainShieldsView" type="id"/>
     <item name="patternedShieldsView" type="id"/>
+    <item name="scoreView" type="id"/>
 </resources>

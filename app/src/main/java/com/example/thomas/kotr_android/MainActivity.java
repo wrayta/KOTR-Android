@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,6 +22,7 @@ import java.util.Random;
 
 import Gameplay.Knight.KnightFactory;
 import Gameplay.Life.LifeSprite;
+import Gameplay.Score.ScoreFactory;
 import Gameplay.Score.ScoreSprite;
 import Gameplay.Shield.ShieldFactory;
 //import Gameplay.Pattern.DisplayPattern;
@@ -48,13 +50,15 @@ public class MainActivity extends AppCompatActivity {
     // finals
 
     private Integer scores[] = {R.drawable.score0, R.drawable.score1, R.drawable.score2, R.drawable.score3, R.drawable.score4, R.drawable.score5, R.drawable.score6, R.drawable.score7, R.drawable.score8, R.drawable.score9};
-    private int currScore = 0;
 
     private Integer lives[] = {R.drawable.life3, R.drawable.life2, R.drawable.life1};
     private int currLife = 0;
 
     private int width;
     private int height;
+
+    private List<Integer> key;
+    private int score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,40 +84,27 @@ public class MainActivity extends AppCompatActivity {
         List<Integer> patternedKnightsList = randomizePatternedKnights();
         setupPatternedKnights(patternedKnightsList);
         List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
+        setupAnswerKey(patternedShieldsList);
         setupPatternedShieldsInFrame(patternedShieldsList);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-//                setupPatternedKnights();
-            }
-        }, 2000);
-//        setupPatternedKnights();
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+////                setupPatternedKnights();
+//            }
+//        }, 2000);
     }
 
     private void setupScore() {
-        ScoreSprite scoreSprite = new ScoreSprite();
-        ImageView scoreView = new ImageView(this);
-        RelativeLayout.LayoutParams scoreLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        scoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        scoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-
-        Bitmap scoreDigitOnes = BitmapFactory.decodeResource(getResources(), R.drawable.score0);
-        Bitmap scoreDigitTens = BitmapFactory.decodeResource(getResources(), R.drawable.score0);
-        Bitmap scoreDigitHundreds = BitmapFactory.decodeResource(getResources(), R.drawable.score0);
-
-        Bitmap scoreBlock = Bitmap.createBitmap(scoreDigitOnes.getWidth() * 3, scoreDigitOnes.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas scoreCanvas = new Canvas(scoreBlock);
-        scoreCanvas.drawBitmap(scoreDigitHundreds, 0, 0, null);
-        scoreCanvas.drawBitmap(scoreDigitTens, scoreDigitHundreds.getWidth(), 0, null);
-        scoreCanvas.drawBitmap(scoreDigitOnes, scoreDigitTens.getWidth() * 2, 0, null);
-
-        scoreView.setImageBitmap(scoreBlock);
-        scoreView.setLayoutParams(scoreLayoutParams);
+        score = 0;
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        ScoreFactory scoreFactory = new ScoreFactory(this, score);
+        ImageView scoreView = scoreFactory.createScore();
+
         layout.addView(scoreView);
     }
 
@@ -173,19 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
         return generated;
 
-//        int[] currentPatternedKnights = new int[KNIGHTS_IN_PATTERN];     // ONLY THE CURRENT LEVEL KNIGHT SPRITES
-//        int[] currentPatternShieldsInFrame = new int[KNIGHTS_IN_PATTERN];
-//        int[] currentPatternShieldsInFrameOrder = new int[KNIGHTS_IN_PATTERN];
-//        PatternOrOrderRandomizer randomizer = new PatternOrOrderRandomizer(0, TOTAL_KNIGHT_SPRITES - 1); // UTILITY FOR RANDOMIZING THE SHIELD PATTERNS AND ORDER
-//
-//
-//
-//        currentPatternShieldsInFrame = randomizer.randomizePatternOrOder(KNIGHTS_IN_PATTERN, currentPatternedKnights); // RANDOMLY SELECTS FROM DIFFERENT PATTERNED SPRITES
-//
-//        randomizer = new PatternOrOrderRandomizer(0, KNIGHTS_IN_PATTERN - 1);
-//
-//        currentPatternShieldsInFrameOrder = randomizer.randomizePatternOrOderSecond(KNIGHTS_IN_PATTERN, currentPatternShieldsInFrame); // RANDOMIZES THE ORDER OF THE RANDOMIZED SPRITE PATTERN SELECTION
-
     }
 
     private List<Integer> randomizePatternedShieldsInFrame(List<Integer> randomizedPatternedKnightsList) {
@@ -205,6 +183,14 @@ public class MainActivity extends AppCompatActivity {
 
         return generated;
 
+    }
+
+    private void setupAnswerKey(List<Integer> patternedShieldsList) {
+        key = new ArrayList<Integer>();
+
+        for(int i = 0; i < patternedShieldsList.size(); i++) {
+            key.add(patternedShieldsList.get(i));
+        }
     }
 
     private void setupPatternedShieldsInFrame(List<Integer> patternedShieldList) {
@@ -231,6 +217,43 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < KNIGHTS_IN_PATTERN; i++) {
             ImageView iv = (ImageView) findViewById(knightViews[i]);
             iv.setImageResource(allPatternedKnights[patternedKnightsList.get(i)]);
+            iv.setTag(patternedKnightsList.get(i));
+            iv.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    checkAgainstKey(view);
+                }
+            });
         }
+    }
+
+    private void checkAgainstKey(View knight) {
+        if (knight.getTag() == key.get(0)) {
+            //increment score
+            score++;
+            incrementScore();
+            //and
+            if(key.size() > 0) {
+                key.remove(0);
+            }
+        }
+
+        else {
+            //decrement lives
+        }
+    }
+
+    private void incrementScore() {
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        ImageView oldScoreView = (ImageView) findViewById(R.id.scoreView);
+        
+        layout.removeView(oldScoreView);
+
+        ScoreFactory scoreFactory = new ScoreFactory(this, score);
+        ImageView scoreView = scoreFactory.createScore();
+
+        layout.addView(scoreView);
     }
 }
