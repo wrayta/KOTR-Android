@@ -8,4 +8,6 @@
     <item name="plainShieldsView" type="id"/>
     <item name="patternedShieldsView" type="id"/>
     <item name="scoreView" type="id"/>
+    <item name="lifeView" type="id"/>
+    <item name="timeView" type="id"/>
 </resources>

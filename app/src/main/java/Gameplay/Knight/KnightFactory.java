@@ -70,7 +70,7 @@ public class KnightFactory extends ContextWrapper{
         RelativeLayout.LayoutParams knightLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         knightLayoutParams.leftMargin = leftMargin;
         knightLayoutParams.topMargin = topMargin;
-        knightView.setImageResource(R.drawable.knight_three_intro_resized_v2);
+        knightView.setBackground(getResources().getDrawable(R.drawable.knight_three_intro_resized_v2));
         knightView.setLayoutParams(knightLayoutParams);
         knightView.setId(id);
 

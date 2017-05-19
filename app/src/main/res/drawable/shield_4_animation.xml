@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+
+    <item
+        android:duration="500"
+        android:drawable="@drawable/shield_4_feet_left"/>
+
+    <item
+        android:duration="500"
+        android:drawable="@drawable/shield_4_feet_even"/>
+
+    <item
+        android:duration="500"
+        android:drawable="@drawable/shield_4_feet_right"/>
+
+    <item
+        android:duration="500"
+        android:drawable="@drawable/shield_4_feet_even"/>
+
+</animation-list>

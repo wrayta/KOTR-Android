@@ -1,9 +1,13 @@
 package com.example.thomas.kotr_android;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,10 +25,12 @@ import java.util.List;
 import java.util.Random;
 
 import Gameplay.Knight.KnightFactory;
+import Gameplay.Life.LifeFactory;
 import Gameplay.Life.LifeSprite;
 import Gameplay.Score.ScoreFactory;
 import Gameplay.Score.ScoreSprite;
 import Gameplay.Shield.ShieldFactory;
+import Gameplay.Timer.TimeFactory;
 //import Gameplay.Pattern.DisplayPattern;
 //import Gameplay.Pattern.PatternKey;
 //import Gameplay.Timer.TimerController;
@@ -34,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
     // finals
     private final int TOTAL_KNIGHT_SPRITES = 8; // how many knights there are to
                                                 // be loaded in
-
-    private final int TOTAL_KNIGHT_SPRITE_ACTIONS = 3; // left leg, right leg,
-                                                       // even
 
     private final int KNIGHTS_IN_PATTERN = 5; // how many knights will appear in
                                               // the gold frame
@@ -49,16 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
     // finals
 
-    private Integer scores[] = {R.drawable.score0, R.drawable.score1, R.drawable.score2, R.drawable.score3, R.drawable.score4, R.drawable.score5, R.drawable.score6, R.drawable.score7, R.drawable.score8, R.drawable.score9};
-
-    private Integer lives[] = {R.drawable.life3, R.drawable.life2, R.drawable.life1};
-    private int currLife = 0;
-
     private int width;
     private int height;
 
     private List<Integer> key;
     private int score;
+    private int lives;
+    private int time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,21 +81,27 @@ public class MainActivity extends AppCompatActivity {
         setupLives();
         setupPlainShieldsInFrame();
         setupPlainKnights();
-        List<Integer> patternedKnightsList = randomizePatternedKnights();
-        setupPatternedKnights(patternedKnightsList);
-        List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
+        final List<Integer> patternedKnightsList = randomizePatternedKnights();
+//        setupPatternedKnights(patternedKnightsList);
+        final List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
         setupAnswerKey(patternedShieldsList);
-        setupPatternedShieldsInFrame(patternedShieldsList);
+//        setupPatternedShieldsInFrame(patternedShieldsList);
 
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-////                setupPatternedKnights();
-//            }
-//        }, 2000);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setupTimer();
+                setupPatternedKnights(patternedKnightsList);
+                setupPatternedShieldsInFrame(patternedShieldsList);
+                startTimer(MainActivity.this);
+            }
+        }, 2000);
+
+//        startTimer(this);
+
     }
 
     private void setupScore() {
@@ -109,15 +115,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupLives() {
-        LifeSprite lifeSprite = new LifeSprite();
-        ImageView lifeView = new ImageView(this);
-        RelativeLayout.LayoutParams lifeLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lifeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        lifeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        lifeView.setImageResource(lives[currLife]);
-        lifeView.setLayoutParams(lifeLayoutParams);
+        lives = 3;
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        LifeFactory lifeFactory = new LifeFactory(this, lives);
+        ImageView lifeView = lifeFactory.createLives();
+
         layout.addView(lifeView);
+    }
+
+    private void setupTimer() {
+        time = 10;
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        TimeFactory timeFactory = new TimeFactory(this, time);
+        ImageView timeView = timeFactory.createTime();
+
+        layout.addView(timeView);
     }
 
     private void setupPlainShieldsInFrame() {
@@ -207,18 +221,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPatternedKnights(List<Integer> patternedKnightsList) {
-        int[] allPatternedKnights =  {R.drawable.shield_1_feet_even, R.drawable.shield_2_feet_even,
-                R.drawable.shield_3_feet_even, R.drawable.shield_4_feet_even, R.drawable.shield_5_feet_even,
-                R.drawable.shield_6_feet_even, R.drawable.shield_7_feet_even, R.drawable.shield_8_feet_even};  // ALL OF THE POSSIBLE KNIGHT SPRITES TO LOAD
+        Drawable[] allPatternedKnights =  {getResources().getDrawable(R.drawable.shield_1_animation),
+                getResources().getDrawable(R.drawable.shield_2_animation),
+                getResources().getDrawable(R.drawable.shield_3_animation),
+                getResources().getDrawable(R.drawable.shield_4_animation),
+                getResources().getDrawable(R.drawable.shield_5_animation),
+                getResources().getDrawable(R.drawable.shield_6_animation),
+                getResources().getDrawable(R.drawable.shield_7_animation),
+                getResources().getDrawable(R.drawable.shield_8_animation)};  // ALL OF THE POSSIBLE KNIGHT SPRITES TO LOAD
 
         int[] knightViews = {R.id.topCenterKnightView, R.id.topLeftKnightView, R.id.topRightKnightView,
                 R.id.bottomLeftKnightView, R.id.bottomRightKnightView};
 
         for(int i = 0; i < KNIGHTS_IN_PATTERN; i++) {
-            ImageView iv = (ImageView) findViewById(knightViews[i]);
-            iv.setImageResource(allPatternedKnights[patternedKnightsList.get(i)]);
-            iv.setTag(patternedKnightsList.get(i));
-            iv.setOnClickListener(new View.OnClickListener() {
+            ImageView knight = (ImageView) findViewById(knightViews[i]);
+
+            knight.setBackground(allPatternedKnights[patternedKnightsList.get(i)]);
+            ((AnimationDrawable) knight.getBackground()).start();
+
+            knight.setTag(patternedKnightsList.get(i));
+            knight.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -230,30 +252,78 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(0)) {
+            //change to plain knight
+            ((AnimationDrawable) knight.getBackground()).stop();
+
+            knight.setBackground(getResources().getDrawable(R.drawable.knight_animation));
+            ((AnimationDrawable) knight.getBackground()).start();
+
+//            ((ImageView)(knight)).setImageResource(R.drawable.knight_three_intro_resized_v2);
             //increment score
-            score++;
             incrementScore();
-            //and
+            //and remove from key
             if(key.size() > 0) {
                 key.remove(0);
             }
         }
 
         else {
-            //decrement lives
+            decrementLives();
         }
     }
 
     private void incrementScore() {
+        score++;
+
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
         ImageView oldScoreView = (ImageView) findViewById(R.id.scoreView);
-        
+
         layout.removeView(oldScoreView);
 
         ScoreFactory scoreFactory = new ScoreFactory(this, score);
         ImageView scoreView = scoreFactory.createScore();
 
         layout.addView(scoreView);
+    }
+
+    private void decrementLives() {
+        lives--;
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        ImageView oldLifeView = (ImageView) findViewById(R.id.lifeView);
+
+        layout.removeView(oldLifeView);
+
+        LifeFactory lifeFactory = new LifeFactory(this, lives);
+        ImageView lifeView = lifeFactory.createLives();
+
+        layout.addView(lifeView);
+    }
+
+    private void startTimer(final Context context) {
+
+        final RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        new CountDownTimer(11000, 1000) {
+            public void onTick(long millisUntilFinished) {
+
+                ImageView oldTimeView = (ImageView) findViewById(R.id.timeView);
+
+                layout.removeView(oldTimeView);
+
+                TimeFactory timeFactory = new TimeFactory(context, time);
+                ImageView timeView = timeFactory.createTime();
+
+                layout.addView(timeView);
+
+                time--;
+            }
+
+            public void onFinish() {
+
+            }
+        }.start();
     }
 }
