@@ -1,16 +1,10 @@
 package com.example.thomas.kotr_android;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -19,23 +13,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-//import Gameplay.Knight.DisplayKnight;
-//import Gameplay.Knight.Knight;
-//import Gameplay.Life.LifeController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import Gameplay.Knight.KnightFactory;
 import Gameplay.Life.LifeFactory;
-import Gameplay.Life.LifeSprite;
 import Gameplay.Score.ScoreFactory;
-import Gameplay.Score.ScoreSprite;
 import Gameplay.Shield.ShieldFactory;
 import Gameplay.Timer.TimeFactory;
-//import Gameplay.Pattern.DisplayPattern;
-//import Gameplay.Pattern.PatternKey;
-//import Gameplay.Timer.TimerController;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,31 +63,13 @@ public class MainActivity extends AppCompatActivity {
         height = size.y;
 //        Log.d("WIDTH", "value: " + width);
 
-        doStageSetup();
+        doStartGame();
     }
 
-    private void doStageSetup() {
+    private void doStartGame() {
         setupScore();
         setupLives();
-        setupPlainShieldsInFrame();
-        setupPlainKnights();
-        final List<Integer> patternedKnightsList = randomizePatternedKnights();
-        final List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
-        setupAnswerKey(patternedShieldsList);
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                setupTimer();
-                setupPatternedKnights(patternedKnightsList);
-                setupPatternedShieldsInFrame(patternedShieldsList);
-                timer.start();
-            }
-        }, 2000);
-
+        playLevel();
     }
 
     private void setupScore() {
@@ -122,6 +90,27 @@ public class MainActivity extends AppCompatActivity {
         ImageView lifeView = lifeFactory.createLives();
 
         layout.addView(lifeView);
+    }
+
+    private void playLevel() {
+        setupPlainShieldsInFrame();
+        setupPlainKnights();
+        final List<Integer> patternedKnightsList = randomizePatternedKnights();
+        final List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
+        setupAnswerKey(patternedShieldsList);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setupTimer();
+                setupPatternedKnights(patternedKnightsList);
+                setupPatternedShieldsInFrame(patternedShieldsList);
+                timer.start();
+            }
+        }, 2000);
     }
 
     private void setupTimer() {
@@ -293,11 +282,33 @@ public class MainActivity extends AppCompatActivity {
             updatePatternedShieldsInFrame();
 
             knight.setEnabled(false);
+
+            if(keyPointer == key.size()) {
+
+                advanceToNextLevel();
+
+            }
         }
 
         else {
             decrementLives();
         }
+    }
+
+    private void advanceToNextLevel() {
+        //Carry out necessary measures to reset level and then "advance" to next stage
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        timer.cancel();
+        layout.removeView(findViewById(R.id.timeView));
+        layout.removeView(findViewById(R.id.patternedShieldsView));
+        layout.removeView(findViewById(R.id.bottomLeftKnightView));
+        layout.removeView(findViewById(R.id.topLeftKnightView));
+        layout.removeView(findViewById(R.id.topCenterKnightView));
+        layout.removeView(findViewById(R.id.topRightKnightView));
+        layout.removeView(findViewById(R.id.bottomRightKnightView));
+
+        playLevel();
     }
 
     private void incrementScore() {
