@@ -73,6 +73,7 @@ public class KnightFactory extends ContextWrapper{
         knightView.setBackground(getResources().getDrawable(R.drawable.knight_three_intro_resized_v2));
         knightView.setLayoutParams(knightLayoutParams);
         knightView.setId(id);
+        knightView.setEnabled(false);
 
         return knightView;
     }

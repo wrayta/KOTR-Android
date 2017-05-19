@@ -7,8 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -56,9 +58,11 @@ public class MainActivity extends AppCompatActivity {
     private int height;
 
     private List<Integer> key;
+    private int keyPointer;
     private int score;
     private int lives;
     private int time;
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +86,8 @@ public class MainActivity extends AppCompatActivity {
         setupPlainShieldsInFrame();
         setupPlainKnights();
         final List<Integer> patternedKnightsList = randomizePatternedKnights();
-//        setupPatternedKnights(patternedKnightsList);
         final List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
         setupAnswerKey(patternedShieldsList);
-//        setupPatternedShieldsInFrame(patternedShieldsList);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable()
@@ -96,11 +98,9 @@ public class MainActivity extends AppCompatActivity {
                 setupTimer();
                 setupPatternedKnights(patternedKnightsList);
                 setupPatternedShieldsInFrame(patternedShieldsList);
-                startTimer(MainActivity.this);
+                timer.start();
             }
         }, 2000);
-
-//        startTimer(this);
 
     }
 
@@ -126,7 +126,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupTimer() {
         time = 10;
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        final RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+
+        timer = new CountDownTimer(10000, 1000) {
+            public void onTick(long millisUntilFinished) {
+
+                ImageView oldTimeView = (ImageView) findViewById(R.id.timeView);
+
+                layout.removeView(oldTimeView);
+
+                TimeFactory timeFactory = new TimeFactory(MainActivity.this, time);
+                ImageView timeView = timeFactory.createTime();
+
+                layout.addView(timeView);
+
+                time--;
+            }
+
+            public void onFinish() {
+                setupEnd();
+            }
+        };
 
         TimeFactory timeFactory = new TimeFactory(this, time);
         ImageView timeView = timeFactory.createTime();
@@ -200,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupAnswerKey(List<Integer> patternedShieldsList) {
+        keyPointer = 0;
         key = new ArrayList<Integer>();
 
         for(int i = 0; i < patternedShieldsList.size(); i++) {
@@ -213,6 +235,10 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
+
+        ImageView plainShieldView = (ImageView) findViewById(R.id.plainShieldsView);
+
+        layout.removeView(plainShieldView);
 
         ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, patternedShieldList);
         ImageView patternedShieldsView = shieldFactory.createShields();
@@ -239,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
             knight.setBackground(allPatternedKnights[patternedKnightsList.get(i)]);
             ((AnimationDrawable) knight.getBackground()).start();
 
+            knight.setEnabled(true);
             knight.setTag(patternedKnightsList.get(i));
             knight.setOnClickListener(new View.OnClickListener() {
 
@@ -251,20 +278,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkAgainstKey(View knight) {
-        if (knight.getTag() == key.get(0)) {
+        if (knight.getTag() == key.get(keyPointer)) {
             //change to plain knight
             ((AnimationDrawable) knight.getBackground()).stop();
 
             knight.setBackground(getResources().getDrawable(R.drawable.knight_animation));
             ((AnimationDrawable) knight.getBackground()).start();
 
-//            ((ImageView)(knight)).setImageResource(R.drawable.knight_three_intro_resized_v2);
             //increment score
             incrementScore();
-            //and remove from key
-            if(key.size() > 0) {
-                key.remove(0);
-            }
+
+            keyPointer++;
+
+            updatePatternedShieldsInFrame();
+
+            knight.setEnabled(false);
         }
 
         else {
@@ -287,43 +315,57 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(scoreView);
     }
 
+    private void updatePatternedShieldsInFrame() {
+        int[] allFrameShields = {R.drawable.shield_1, R.drawable.shield_2, R.drawable.shield_3,
+                R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
+                R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
+
+        ImageView oldPatternedShieldsView = (ImageView) findViewById(R.id.patternedShieldsView);
+
+        layout.removeView(oldPatternedShieldsView);
+
+        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, key);
+        ImageView patternedShieldsView = shieldFactory.createShields(keyPointer);
+
+        layout.addView(patternedShieldsView);
+    }
+
     private void decrementLives() {
         lives--;
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+        if(lives == 0) {
 
-        ImageView oldLifeView = (ImageView) findViewById(R.id.lifeView);
+            timer.cancel();
+            setupEnd();
 
-        layout.removeView(oldLifeView);
+        } else {
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
-        LifeFactory lifeFactory = new LifeFactory(this, lives);
-        ImageView lifeView = lifeFactory.createLives();
+            ImageView oldLifeView = (ImageView) findViewById(R.id.lifeView);
 
-        layout.addView(lifeView);
+            layout.removeView(oldLifeView);
+
+            LifeFactory lifeFactory = new LifeFactory(this, lives);
+            ImageView lifeView = lifeFactory.createLives();
+
+            layout.addView(lifeView);
+        }
     }
 
-    private void startTimer(final Context context) {
+    private void setupEnd() {
 
-        final RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
+        layout.removeAllViews();
 
-        new CountDownTimer(11000, 1000) {
-            public void onTick(long millisUntilFinished) {
+        ImageView endView = new ImageView(this);
+        RelativeLayout.LayoutParams endLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        endLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-                ImageView oldTimeView = (ImageView) findViewById(R.id.timeView);
+        endView.setImageResource(R.drawable.end_screen);
+        endView.setLayoutParams(endLayoutParams);
 
-                layout.removeView(oldTimeView);
-
-                TimeFactory timeFactory = new TimeFactory(context, time);
-                ImageView timeView = timeFactory.createTime();
-
-                layout.addView(timeView);
-
-                time--;
-            }
-
-            public void onFinish() {
-
-            }
-        }.start();
+        layout.addView(endView);
     }
 }
