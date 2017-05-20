@@ -6,10 +6,18 @@
         android:background="@drawable/background">
 
         <RelativeLayout
-            android:id="@+id/relative_layout_gold_frame"
+            android:id="@+id/relative_layout_game_screen"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_knights_space"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/gold_frame">
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/gold_frame"
@@ -17,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/gold_frame" />
+
 
         </RelativeLayout>
 
