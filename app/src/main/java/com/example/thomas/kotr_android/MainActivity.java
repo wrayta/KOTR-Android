@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private void doStartGame() {
         setupScore();
         setupLives();
-        setupSound();
+//        setupSound();
         playLevel();
     }
 
@@ -99,11 +99,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSound() {
 
-//        mediaPlayer = MediaPlayer.create(this, R.raw.theme);
-//        mediaPlayer.start();
-//        mediaPlayer.setLooping(true);
-//
-//        soundPoolPlayer = new SoundPoolPlayer(this);
+        mediaPlayer = MediaPlayer.create(this, R.raw.theme);
+        mediaPlayer.start();
+        mediaPlayer.setLooping(true);
+
+        soundPoolPlayer = new SoundPoolPlayer(this);
 
     }
 
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         int[] plainShields = {R.drawable.plain_shield_v2, R.drawable.plain_shield_v2,
             R.drawable.plain_shield_v2, R.drawable.plain_shield_v2, R.drawable.plain_shield_v2};
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_game_screen);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
 
         ShieldFactory shieldFactory = new ShieldFactory(this, R.id.plainShieldsView, plainShields);
         ImageView plainShieldsView = shieldFactory.createShields();
@@ -176,18 +176,14 @@ public class MainActivity extends AppCompatActivity {
     private void setupPlainKnights() {
 
         // Main layout of game
-//        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
-
-        RelativeLayout knightsSpace = (RelativeLayout) findViewById(R.id.relative_layout_knights_space);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
         KnightFactory knightFactory = new KnightFactory(this, KNIGHTS_IN_PATTERN, width, height);
         List<ImageView> knightViews = knightFactory.createKnights();
 
         for(int i = 0; i < knightViews.size(); i++) {
-            knightsSpace.addView(knightViews.get(i));
+            layout.addView(knightViews.get(i));
         }
-
-//        layout.addView(knightsSpace);
 
     }
 
@@ -242,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
                 R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_game_screen);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
 
         ImageView plainShieldView = (ImageView) findViewById(R.id.plainShieldsView);
 
@@ -321,17 +317,15 @@ public class MainActivity extends AppCompatActivity {
     private void advanceToNextLevel() {
         //Carry out necessary measures to reset level and then "advance" to next stage
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
-        RelativeLayout knightsSpace = (RelativeLayout) findViewById(R.id.relative_layout_knights_space);
 
         timer.cancel();
         layout.removeView(findViewById(R.id.timeView));
         layout.removeView(findViewById(R.id.patternedShieldsView));
-//        knightsSpace.removeView(findViewById(R.id.bottomLeftKnightView));
-//        knightsSpace.removeView(findViewById(R.id.topLeftKnightView));
-//        knightsSpace.removeView(findViewById(R.id.topCenterKnightView));
-//        knightsSpace.removeView(findViewById(R.id.topRightKnightView));
-//        knightsSpace.removeView(findViewById(R.id.bottomRightKnightView));
-        knightsSpace.removeAllViews();
+        layout.removeView(findViewById(R.id.bottomLeftKnightView));
+        layout.removeView(findViewById(R.id.topLeftKnightView));
+        layout.removeView(findViewById(R.id.topCenterKnightView));
+        layout.removeView(findViewById(R.id.topRightKnightView));
+        layout.removeView(findViewById(R.id.bottomRightKnightView));
 
         playLevel();
     }
@@ -356,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
                 R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_game_screen);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
 
         ImageView oldPatternedShieldsView = (ImageView) findViewById(R.id.patternedShieldsView);
 

@@ -37,19 +37,24 @@ public class KnightFactory extends ContextWrapper{
 
         switch (numberOfKnights){
             case 5:
-                ImageView bottomLeftKnightView = createKnight(R.id.bottomLeftKnightView, RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.ALIGN_PARENT_BOTTOM);
+                ImageView bottomLeftKnightView = createKnight(R.id.bottomLeftKnightView, 0,
+                        (int)((2.0 / 3.0) * screenHeight) - (getResources().getDrawable(R.drawable.gold_frame).getIntrinsicHeight() + (int)((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
                 knightViews.add(bottomLeftKnightView);
 
-                ImageView topLeftKnightView = createKnight(R.id.topLeftKnightView, RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.ALIGN_PARENT_LEFT);
+                ImageView topLeftKnightView = createKnight(R.id.topLeftKnightView, 0,
+                        (int)((1.0 / 3.0) * screenHeight) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
                 knightViews.add(topLeftKnightView);
 
-                ImageView topCenterKnightView = createKnight(R.id.topCenterKnightView, RelativeLayout.CENTER_IN_PARENT, RelativeLayout.ABOVE);
+                ImageView topCenterKnightView = createKnight(R.id.topCenterKnightView, (int)(0.5 * screenWidth) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth())),
+                        (int)((1.0 / 3.0) * screenHeight) - (getResources().getDrawable(R.drawable.score0).getIntrinsicHeight() + getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
                 knightViews.add(topCenterKnightView);
 
-                ImageView topRightKnightView = createKnight(R.id.topRightKnightView, RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.ALIGN_PARENT_RIGHT);
+                ImageView topRightKnightView = createKnight(R.id.topRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                        (int)((1.0 / 3.0) * screenHeight) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
                 knightViews.add(topRightKnightView);
 
-                ImageView bottomRightKnightView = createKnight(R.id.bottomRightKnightView, RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.ALIGN_PARENT_BOTTOM);
+                ImageView bottomRightKnightView = createKnight(R.id.bottomRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                        (int)((2.0 / 3.0) * screenHeight) - (getResources().getDrawable(R.drawable.gold_frame).getIntrinsicHeight() + (int)((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
                 knightViews.add(bottomRightKnightView);
                 break;
             default:
@@ -59,14 +64,12 @@ public class KnightFactory extends ContextWrapper{
         return knightViews;
     }
 
-    private ImageView createKnight(int id, int layoutRule1, int layoutRule2) {
+    private ImageView createKnight(int id, int leftMargin, int topMargin) {
 
         ImageView knightView = new ImageView(this);
         RelativeLayout.LayoutParams knightLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        knightLayoutParams.addRule(layoutRule1);
-        knightLayoutParams.addRule(layoutRule2);
-//        knightLayoutParams.leftMargin = leftMargin;
-//        knightLayoutParams.topMargin = topMargin;
+        knightLayoutParams.leftMargin = leftMargin;
+        knightLayoutParams.topMargin = topMargin;
         knightView.setBackground(getResources().getDrawable(R.drawable.knight_three_intro_resized_v2));
         knightView.setLayoutParams(knightLayoutParams);
         knightView.setId(id);
