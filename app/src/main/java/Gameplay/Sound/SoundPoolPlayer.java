@@ -21,9 +21,10 @@ public class SoundPoolPlayer {
 
     public SoundPoolPlayer(Context context)
     {
-        // setup Soundpool
+        // setup SoundPool based on API level
         createSoundPool();
 
+        // load sounds
         loadResources(context);
 
     }
