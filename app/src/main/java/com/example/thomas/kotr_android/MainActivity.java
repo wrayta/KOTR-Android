@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private void doStartGame() {
         setupScore();
         setupLives();
-        setupSound();
+//        setupSound();
         playLevel();
     }
 
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(keyPointer)) {
 
-            soundPoolPlayer.playShortResource(R.raw.correct);
+//            soundPoolPlayer.playShortResource(R.raw.correct);
 
             //change to plain knight
             ((AnimationDrawable) knight.getBackground()).stop();
@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         else {
-            soundPoolPlayer.playShortResource(R.raw.incorrect);
+//            soundPoolPlayer.playShortResource(R.raw.incorrect);
             decrementLives();
         }
     }
