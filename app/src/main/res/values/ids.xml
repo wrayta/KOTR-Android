@@ -10,4 +10,5 @@
     <item name="scoreView" type="id"/>
     <item name="lifeView" type="id"/>
     <item name="timeView" type="id"/>
+    <item name="endView" type="id"/>
 </resources>

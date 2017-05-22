@@ -52,7 +52,7 @@ public class LifeFactory extends ContextWrapper {
 
         Bitmap lifeBlock = Bitmap.createBitmap(blockWidth, blockHeight, Bitmap.Config.ARGB_8888);
         Canvas lifeCanvas = new Canvas(lifeBlock);
-        
+
         for(int i = 0; i < lives; i++) {
 
             lifeCanvas.drawBitmap(numberOfLives.get(i), numberOfLives.get(i).getWidth() * i, 0, null);
