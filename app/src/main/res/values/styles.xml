@@ -6,6 +6,33 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:alertDialogTheme">@style/AppAlertTheme</item>
+    </style>
+
+    <style name="AppAlertTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">#000</item>
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
+        <item name="android:textColorHighlight">@color/colorPrimary</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
+        <item name="android:buttonBarButtonStyle">@style/DialogWindowButton</item>
+    </style>
+
+    <style name="DialogWindowTitle" parent="Base.DialogWindowTitle.AppCompat">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">@style/DialogWindowTitleText</item>
+    </style>
+
+    <style name="DialogWindowTitleText" parent="@android:style/TextAppearance.DialogWindowTitle">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:fontFamily">casual</item>
+    </style>
+
+    <style name="DialogWindowButton" parent="@android:style/Widget.Holo.Light.Button.Borderless.Small">
+        <item name="android:background">@drawable/game_mode_button</item>
     </style>
 
 </resources>
