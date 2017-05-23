@@ -3,6 +3,7 @@ package Gameplay.Knight;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Point;
+import android.media.Image;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,13 +23,15 @@ public class KnightFactory extends ContextWrapper{
     private int numberOfKnights;
     private int screenWidth;
     private int screenHeight;
+    private char patternId;
 
-    public KnightFactory(Context base, int numberOfKnights, int screenWidth, int screenHeight) {
+    public KnightFactory(Context base, int numberOfKnights, int screenWidth, int screenHeight, char patternId) {
         super(base);
 
         this.numberOfKnights = numberOfKnights;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.patternId = patternId;
     }
 
     public List<ImageView> createKnights() {
@@ -37,25 +40,122 @@ public class KnightFactory extends ContextWrapper{
 
         switch (numberOfKnights){
             case 5:
-                ImageView bottomLeftKnightView = createKnight(R.id.bottomLeftKnightView, 0,
-                        (int)((2.0 / 3.0) * screenHeight) - (getResources().getDrawable(R.drawable.gold_frame).getIntrinsicHeight() + (int)((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
-                knightViews.add(bottomLeftKnightView);
+                ImageView bottomLeftKnightView;
+                ImageView topLeftKnightView;
+                ImageView topCenterKnightView;
+                ImageView topRightKnightView;
+                ImageView bottomRightKnightView;
 
-                ImageView topLeftKnightView = createKnight(R.id.topLeftKnightView, 0,
-                        (int)((1.0 / 3.0) * screenHeight) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
-                knightViews.add(topLeftKnightView);
+                switch (patternId) {
 
-                ImageView topCenterKnightView = createKnight(R.id.topCenterKnightView, (int)(0.5 * screenWidth) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth())),
-                        (int)((1.0 / 3.0) * screenHeight) - (getResources().getDrawable(R.drawable.score0).getIntrinsicHeight() + getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
-                knightViews.add(topCenterKnightView);
+                    //'Box' pattern
+                    // *   *
+                    //   *
+                    // *   *
+                    case 'B':
+                        bottomLeftKnightView = createKnight(R.id.bottomLeftKnightView, 0,
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomLeftKnightView);
 
-                ImageView topRightKnightView = createKnight(R.id.topRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
-                        (int)((1.0 / 3.0) * screenHeight) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
-                knightViews.add(topRightKnightView);
+                        topLeftKnightView = createKnight(R.id.topLeftKnightView, 0,
+                                (int) ((1.0 / 3.0) * screenHeight) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topLeftKnightView);
 
-                ImageView bottomRightKnightView = createKnight(R.id.bottomRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
-                        (int)((2.0 / 3.0) * screenHeight) - (getResources().getDrawable(R.drawable.gold_frame).getIntrinsicHeight() + (int)((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
-                knightViews.add(bottomRightKnightView);
+                        topCenterKnightView = createKnight(R.id.topCenterKnightView, (int) (0.5 * screenWidth) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth())),
+                                (int)(0.5 * screenHeight) - (int)(1.0 / 3.0 * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
+                        knightViews.add(topCenterKnightView);
+
+                        topRightKnightView = createKnight(R.id.topRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                                (int) ((1.0 / 3.0) * screenHeight) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topRightKnightView);
+
+                        bottomRightKnightView = createKnight(R.id.bottomRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomRightKnightView);
+
+                        break;
+
+                    //'House' pattern
+                    //   *
+                    // *   *
+                    // *   *
+                    case 'H':
+                        bottomLeftKnightView = createKnight(R.id.bottomLeftKnightView, 0,
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomLeftKnightView);
+
+                        topLeftKnightView = createKnight(R.id.topLeftKnightView, 0,
+                                (int) ((1.0 / 3.0) * screenHeight) + (int) (1.0 / 3.0 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topLeftKnightView);
+
+                        topCenterKnightView = createKnight(R.id.topCenterKnightView, (int) (0.5 * screenWidth) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth())),
+                                (int) ((1.0 / 3.0) * screenHeight) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topCenterKnightView);
+
+                        topRightKnightView = createKnight(R.id.topRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                                (int) ((1.0 / 3.0) * screenHeight) + (int) (1.0 / 3.0 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topRightKnightView);
+
+                        bottomRightKnightView = createKnight(R.id.bottomRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomRightKnightView);
+
+                        break;
+
+                    //'M' pattern
+                    //   *   *
+                    //     *
+                    // *       *
+                    case 'M':
+                        bottomLeftKnightView = createKnight(R.id.bottomLeftKnightView, 0,
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomLeftKnightView);
+
+                        topLeftKnightView = createKnight(R.id.topLeftKnightView, (int)((1.0 / 3.0) * screenWidth) - (int)(0.5 * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()),
+                                (int) ((1.0 / 3.0) * screenHeight) - (int)(0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topLeftKnightView);
+
+                        topCenterKnightView = createKnight(R.id.topCenterKnightView, (int) (0.5 * screenWidth) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth())),
+                                (int)(0.5 * screenHeight) - (int)(1.0 / 3.0 * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
+                        knightViews.add(topCenterKnightView);
+
+                        topRightKnightView = createKnight(R.id.topRightKnightView, (int)((2.0 / 3.0) * screenWidth) - (int)(0.5 * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()),
+                                (int) ((1.0 / 3.0) * screenHeight) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topRightKnightView);
+
+                        bottomRightKnightView = createKnight(R.id.bottomRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomRightKnightView);
+                        break;
+
+                    //'W' pattern
+                    // *     *
+                    //    *
+                    //  *   *
+                    case 'W':
+                        bottomLeftKnightView = createKnight(R.id.bottomLeftKnightView, (int)((1.0 / 3.0) * screenWidth) - (int)(0.5 * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()),
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomLeftKnightView);
+
+                        topLeftKnightView = createKnight(R.id.topLeftKnightView, 0,
+                                (int) ((1.0 / 3.0) * screenHeight) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topLeftKnightView);
+
+                        topCenterKnightView = createKnight(R.id.topCenterKnightView, (int) (0.5 * screenWidth) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth())),
+                                (int)(0.5 * screenHeight) - (int)(2.0 / 3.0 * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight()));
+                        knightViews.add(topCenterKnightView);
+
+                        topRightKnightView = createKnight(R.id.topRightKnightView, screenWidth - getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
+                                (int) ((1.0 / 3.0) * screenHeight) - (int) (0.5 * (getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(topRightKnightView);
+
+                        bottomRightKnightView = createKnight(R.id.bottomRightKnightView, (int)((2.0 / 3.0) * screenWidth) - (int)(0.5 * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()),
+                                (int) ((2.0 / 3.0) * screenHeight) - ((int) ((1.0 / 3.0) * getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight())));
+                        knightViews.add(bottomRightKnightView);
+
+                    default:
+                        break;
+                }
                 break;
             default:
                 break;

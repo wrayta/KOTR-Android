@@ -196,7 +196,7 @@ public class MainActivity extends FragmentActivity {
         // Main layout of game
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
-        KnightFactory knightFactory = new KnightFactory(this, KNIGHTS_IN_PATTERN, width, height);
+        KnightFactory knightFactory = new KnightFactory(this, KNIGHTS_IN_PATTERN, width, height, 'H');
         List<ImageView> knightViews = knightFactory.createKnights();
 
         for(int i = 0; i < knightViews.size(); i++) {
