@@ -1,8 +1,7 @@
 package com.example.thomas.kotr_android;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
@@ -10,10 +9,11 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.style.TextAppearanceSpan;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +32,9 @@ import Gameplay.Score.ScoreFactory;
 import Gameplay.Shield.ShieldFactory;
 import Gameplay.Sound.SoundPoolPlayer;
 import Gameplay.Timer.TimeFactory;
+import Messages.ReplayDialogFragment;
 
-import static android.app.PendingIntent.getActivity;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     // finals
     private final int TOTAL_KNIGHT_SPRITES = 8; // how many knights there are to
@@ -430,52 +429,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        ReplayDialogFragment replayDialogFragment = new ReplayDialogFragment();
 
-        // Add the buttons
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked 'replay'
-                recreate();
-            }
-        });
-        builder.setNeutralButton(R.string.returnToMenu, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked 'go back to menu'
-            }
-        });
-
-        builder.setTitle("Score: " + score)
-                .setMessage(R.string.replayPrompt);
-        // Set other dialog properties
-
-        // Create the AlertDialog
-        AlertDialog dialog = builder.create();
-
-        // Make some UI changes for AlertDialog
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(final DialogInterface dialog) {
-
-                // Add or create your own background drawable for AlertDialog window
-                Window view = ((AlertDialog)dialog).getWindow();
-//                view.setBackgroundDrawableResource(R.drawable.your_drawable);
-
-                // Customize POSITIVE, NEGATIVE and NEUTRAL buttons.
-                Button positiveButton = ((AlertDialog)dialog).getButton(DialogInterface.BUTTON_POSITIVE);
-                positiveButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-                positiveButton.setTypeface(Typeface.MONOSPACE);
-//                positiveButton.setTypeface(Typeface.DEFAULT_BOLD);
-                positiveButton.invalidate();
-
-                Button neutralButton = ((AlertDialog)dialog).getButton(DialogInterface.BUTTON_NEUTRAL);
-                neutralButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-                neutralButton.setTypeface(Typeface.MONOSPACE);
-//                neutralButton.setTypeface(Typeface.DEFAULT_BOLD);
-                neutralButton.invalidate();
-            }
-        });
-
-        dialog.show();
+        Bundle bundle = new Bundle();
+        bundle.putInt("SCORE",score);
+        replayDialogFragment.setArguments(bundle);
+        replayDialogFragment.show(getSupportFragmentManager(), "replay");
     }
 }

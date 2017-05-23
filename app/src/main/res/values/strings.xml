@@ -3,4 +3,7 @@
     <string name="replayPrompt">Play Again?</string>
     <string name="yes">Yes</string>
     <string name="returnToMenu">Return To Menu</string>
+    <string name="title">Knights of the Round</string>
+    <string name="playArcadeMode">Arcade Mode</string>
+    <string name="game_name">KOTR</string>
 </resources>
