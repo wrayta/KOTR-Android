@@ -135,16 +135,16 @@ public class MainActivity extends FragmentActivity {
 
     private void setupSound() {
 
-//        mediaPlayerPlayer = new MediaPlayerPlayer();
-//
-//        if(!mediaPlayerPlayer.isPlayingAudio) {
-//            mediaPlayerPlayer.createAudio(this, R.raw.theme);
-//            mediaPlayerPlayer.resumePlayingAudio();
-//        }
-//
-//        mediaPlayerPlayer.setLooping(true);
-//
-//        soundPoolPlayer = new SoundPoolPlayer(this);
+        mediaPlayerPlayer = new MediaPlayerPlayer();
+
+        if(!mediaPlayerPlayer.isPlayingAudio) {
+            mediaPlayerPlayer.createAudio(this, R.raw.theme);
+            mediaPlayerPlayer.resumePlayingAudio();
+        }
+
+        mediaPlayerPlayer.setLooping(true);
+
+        soundPoolPlayer = new SoundPoolPlayer(this);
 
     }
 
@@ -316,12 +316,12 @@ public class MainActivity extends FragmentActivity {
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(keyPointer)) {
 
-//            soundPoolPlayer.playShortResource(R.raw.correct);
+            soundPoolPlayer.playShortResource(R.raw.correct);
 
             //change to plain knight
             ((AnimationDrawable) knight.getBackground()).stop();
 
-            knight.setBackground(getResources().getDrawable(R.drawable.knight_animation));
+            knight.setBackground(getResources().getDrawable(R.drawable.knight_blank_animation));
             ((AnimationDrawable) knight.getBackground()).start();
 
             //increment score
@@ -341,7 +341,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         else {
-//            soundPoolPlayer.playShortResource(R.raw.incorrect);
+            soundPoolPlayer.playShortResource(R.raw.incorrect);
             decrementLives();
         }
     }
