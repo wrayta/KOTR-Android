@@ -28,35 +28,49 @@ import Messages.ReplayDialogFragment;
 
 public class MainActivity extends FragmentActivity {
 
-    // finals
-    private final int TOTAL_KNIGHT_SPRITES = 8; // how many knights there are to
-                                                // be loaded in
+    //********************************************************************finals-start
 
-    private final int KNIGHTS_IN_PATTERN = 5; // how many knights will appear in
-                                              // the gold frame
+    private final int TOTAL_KNIGHT_SPRITES = 8;                           // how many knights there
+                                                                          // are to be loaded in
 
-    private final Character[] KNIGHT_PATTERN_IDS = {'B', 'H', 'M', 'W'}; // how many coord patterns
-                                                                    // for knights will be available
+    private final int KNIGHTS_IN_PATTERN = 5;                             // how many knights will
+                                                                          // appear in the gold frame
 
-    private final int STARTING_LIVES = 3; // how many lives the player will
-                                          // start with
+    private final Character[] KNIGHT_PATTERN_IDS = {'B', 'H', 'M', 'W'};  // how many coord patterns
+                                                                          // for knights will be
+                                                                          // available
 
-    private final int STARTING_TIME = 10; // how much initial time is given for
-                                          // each round
+    private final int STARTING_LIVES = 3;                                 // how many lives the
+                                                                          // player will start with
 
-    // finals
+    private final int STARTING_TIME = 10;                                 // how much initial time
+                                                                          // is given for each round
 
-    private int width;
-    private int height;
+    //********************************************************************finals-end
 
-    private List<Integer> key;
-    private int keyPointer;
-    private int score;
-    private int lives;
-    private int time;
-    private CountDownTimer timer;
-    private SoundPoolPlayer soundPoolPlayer;
-    private MediaPlayerPlayer mediaPlayerPlayer;
+
+    //********************************************************************globals-start
+
+    private int width;                                                    // screen width
+    private int height;                                                   // screen height
+
+    private int keyPointer;                                               // keeps track of place in
+                                                                          // pattern key
+
+    private int score;                                                    // player score
+    private int lives;                                                    // player lives
+    private int time;                                                     // keeps track of time
+
+    private List<Integer> key;                                            // the ordered pattern to
+                                                                          // match
+
+    private CountDownTimer timer;                                         // timer object
+    private SoundPoolPlayer soundPoolPlayer;                              // plays 'correct' and
+                                                                          // 'incorrect' .wavs
+
+    private MediaPlayerPlayer mediaPlayerPlayer;                          // plays the theme song
+
+    //********************************************************************globals-end
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
