@@ -1,24 +1,16 @@
 package com.example.thomas.kotr_android;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -30,6 +22,7 @@ import Gameplay.Knight.KnightFactory;
 import Gameplay.Life.LifeFactory;
 import Gameplay.Score.ScoreFactory;
 import Gameplay.Shield.ShieldFactory;
+import Gameplay.Sound.MediaPlayerPlayer;
 import Gameplay.Sound.SoundPoolPlayer;
 import Gameplay.Timer.TimeFactory;
 import Messages.ReplayDialogFragment;
@@ -42,6 +35,9 @@ public class MainActivity extends FragmentActivity {
 
     private final int KNIGHTS_IN_PATTERN = 5; // how many knights will appear in
                                               // the gold frame
+
+    private final char[] KNIGHT_PATTERN_IDS = {'B', 'H', 'M', 'W'}; // how many coord patterns
+                                                                    // for knights will be available
 
     private final int STARTING_LIVES = 3; // how many lives the player will
                                           // start with
@@ -61,7 +57,7 @@ public class MainActivity extends FragmentActivity {
     private int time;
     private CountDownTimer timer;
     private SoundPoolPlayer soundPoolPlayer;
-    private MediaPlayer mediaPlayer;
+    private MediaPlayerPlayer mediaPlayerPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +75,28 @@ public class MainActivity extends FragmentActivity {
         doStartGame();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(mediaPlayerPlayer != null && mediaPlayerPlayer.isPlayingAudio) {
+            mediaPlayerPlayer.pauseAudio();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(mediaPlayerPlayer != null && !mediaPlayerPlayer.isPlayingAudio) {
+            mediaPlayerPlayer.resumePlayingAudio();
+        }
+    }
+
     private void doStartGame() {
         setupScore();
         setupLives();
-//        setupSound();
+        setupSound();
         playLevel();
     }
 
@@ -108,9 +122,14 @@ public class MainActivity extends FragmentActivity {
 
     private void setupSound() {
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.theme);
-        mediaPlayer.start();
-        mediaPlayer.setLooping(true);
+        mediaPlayerPlayer = new MediaPlayerPlayer();
+
+        if(!mediaPlayerPlayer.isPlayingAudio) {
+            mediaPlayerPlayer.createAudio(this, R.raw.theme);
+            mediaPlayerPlayer.resumePlayingAudio();
+        }
+
+        mediaPlayerPlayer.setLooping(true);
 
         soundPoolPlayer = new SoundPoolPlayer(this);
 
@@ -194,12 +213,11 @@ public class MainActivity extends FragmentActivity {
 
     private char randomizeKnightPatternId() {
 
-        char[] patternIds = {'H', 'B', 'W', 'M'};
         Random rng = new Random();
 
-        Integer idIndex = rng.nextInt(patternIds.length);
+        Integer idIndex = rng.nextInt(KNIGHT_PATTERN_IDS.length);
 
-        return patternIds[idIndex];
+        return KNIGHT_PATTERN_IDS[idIndex];
     }
 
     private void setupPlainKnights(char patternId) {
@@ -313,7 +331,7 @@ public class MainActivity extends FragmentActivity {
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(keyPointer)) {
 
-//            soundPoolPlayer.playShortResource(R.raw.correct);
+            soundPoolPlayer.playShortResource(R.raw.correct);
 
             //change to plain knight
             ((AnimationDrawable) knight.getBackground()).stop();
@@ -338,7 +356,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         else {
-//            soundPoolPlayer.playShortResource(R.raw.incorrect);
+            soundPoolPlayer.playShortResource(R.raw.incorrect);
             decrementLives();
         }
     }

@@ -4,28 +4,20 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
-import android.view.Window;
-import android.widget.Button;
 
 import com.example.thomas.kotr_android.MainActivity;
 import com.example.thomas.kotr_android.MainMenuActivity;
 import com.example.thomas.kotr_android.R;
+
+import Gameplay.Sound.MediaPlayerPlayer;
 
 /**
  * Created by jeanine on 5/22/17.
  */
 
 public class ReplayDialogFragment extends DialogFragment {
-
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup oontainer,
-//                             Bundle savedInstanceState) {
-//        return getActivity().getLayoutInflater().inflate(R.layout.)
-//    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -40,6 +32,8 @@ public class ReplayDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked 'replay'
 
+                MediaPlayerPlayer mediaPlayerPlayer = new MediaPlayerPlayer();
+                mediaPlayerPlayer.pauseAudio();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 startActivity(intent);
             }
@@ -48,6 +42,9 @@ public class ReplayDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked 'go back to menu'
 
+                MediaPlayerPlayer mediaPlayerPlayer = new MediaPlayerPlayer();
+                mediaPlayerPlayer.stopAudio();
+                mediaPlayerPlayer.length = 0;
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
             }
@@ -59,33 +56,6 @@ public class ReplayDialogFragment extends DialogFragment {
 
         // Create the AlertDialog
         Dialog dialog = builder.create();
-
-
-//        // Make some UI changes for AlertDialog
-//        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-//            @Override
-//            public void onShow(final DialogInterface dialog) {
-//
-//                // Add or create your own background drawable for AlertDialog window
-//                Window view = ((AlertDialog)dialog).getWindow();
-////                view.setBackgroundDrawableResource(R.drawable.your_drawable);
-//
-//                // Customize POSITIVE, NEGATIVE and NEUTRAL buttons.
-//                Button positiveButton = ((AlertDialog)dialog).getButton(DialogInterface.BUTTON_POSITIVE);
-////                positiveButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-//                positiveButton.setTypeface(Typeface.DEFAULT);
-//                positiveButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-////                positiveButton.setTypeface(Typeface.DEFAULT_BOLD);
-//                positiveButton.invalidate();
-//
-//                Button neutralButton = ((AlertDialog)dialog).getButton(DialogInterface.BUTTON_NEUTRAL);
-////                neutralButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-//                neutralButton.setTypeface(Typeface.DEFAULT);
-//                neutralButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-////                neutralButton.setTypeface(Typeface.DEFAULT_BOLD);
-//                neutralButton.invalidate();
-//            }
-//        });
 
         return dialog;
     }
