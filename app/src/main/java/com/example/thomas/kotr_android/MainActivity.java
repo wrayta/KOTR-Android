@@ -118,7 +118,8 @@ public class MainActivity extends FragmentActivity {
 
     private void playLevel() {
         setupPlainShieldsInFrame();
-        setupPlainKnights();
+        char patternId = randomizeKnightPatternId();
+        setupPlainKnights(patternId);
         final List<Integer> patternedKnightsList = randomizePatternedKnights();
         final List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
         setupAnswerKey(patternedShieldsList);
@@ -191,12 +192,22 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    private void setupPlainKnights() {
+    private char randomizeKnightPatternId() {
+
+        char[] patternIds = {'H', 'B', 'W', 'M'};
+        Random rng = new Random();
+
+        Integer idIndex = rng.nextInt(patternIds.length);
+
+        return patternIds[idIndex];
+    }
+
+    private void setupPlainKnights(char patternId) {
 
         // Main layout of game
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
-        KnightFactory knightFactory = new KnightFactory(this, KNIGHTS_IN_PATTERN, width, height, 'H');
+        KnightFactory knightFactory = new KnightFactory(this, KNIGHTS_IN_PATTERN, width, height, patternId);
         List<ImageView> knightViews = knightFactory.createKnights();
 
         for(int i = 0; i < knightViews.size(); i++) {
