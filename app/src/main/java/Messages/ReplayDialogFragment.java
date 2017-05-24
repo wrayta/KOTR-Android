@@ -57,6 +57,9 @@ public class ReplayDialogFragment extends DialogFragment {
         // Create the AlertDialog
         Dialog dialog = builder.create();
 
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
         return dialog;
     }
 }

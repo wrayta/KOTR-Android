@@ -3,7 +3,6 @@ package com.example.thomas.kotr_android;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -16,7 +15,6 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import Gameplay.Knight.KnightFactory;
 import Gameplay.Life.LifeFactory;
@@ -25,6 +23,7 @@ import Gameplay.Shield.ShieldFactory;
 import Gameplay.Sound.MediaPlayerPlayer;
 import Gameplay.Sound.SoundPoolPlayer;
 import Gameplay.Timer.TimeFactory;
+import Logic.GameElementRandomizer;
 import Messages.ReplayDialogFragment;
 
 public class MainActivity extends FragmentActivity {
@@ -36,7 +35,7 @@ public class MainActivity extends FragmentActivity {
     private final int KNIGHTS_IN_PATTERN = 5; // how many knights will appear in
                                               // the gold frame
 
-    private final char[] KNIGHT_PATTERN_IDS = {'B', 'H', 'M', 'W'}; // how many coord patterns
+    private final Character[] KNIGHT_PATTERN_IDS = {'B', 'H', 'M', 'W'}; // how many coord patterns
                                                                     // for knights will be available
 
     private final int STARTING_LIVES = 3; // how many lives the player will
@@ -111,7 +110,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void setupLives() {
-        lives = 3;
+        lives = STARTING_LIVES;
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
         LifeFactory lifeFactory = new LifeFactory(this, lives);
@@ -122,16 +121,16 @@ public class MainActivity extends FragmentActivity {
 
     private void setupSound() {
 
-        mediaPlayerPlayer = new MediaPlayerPlayer();
-
-        if(!mediaPlayerPlayer.isPlayingAudio) {
-            mediaPlayerPlayer.createAudio(this, R.raw.theme);
-            mediaPlayerPlayer.resumePlayingAudio();
-        }
-
-        mediaPlayerPlayer.setLooping(true);
-
-        soundPoolPlayer = new SoundPoolPlayer(this);
+//        mediaPlayerPlayer = new MediaPlayerPlayer();
+//
+//        if(!mediaPlayerPlayer.isPlayingAudio) {
+//            mediaPlayerPlayer.createAudio(this, R.raw.theme);
+//            mediaPlayerPlayer.resumePlayingAudio();
+//        }
+//
+//        mediaPlayerPlayer.setLooping(true);
+//
+//        soundPoolPlayer = new SoundPoolPlayer(this);
 
     }
 
@@ -158,7 +157,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void setupTimer() {
-        time = 10;
+        time = STARTING_TIME;
 
         final RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
@@ -213,11 +212,8 @@ public class MainActivity extends FragmentActivity {
 
     private char randomizeKnightPatternId() {
 
-        Random rng = new Random();
+        return GameElementRandomizer.pickRandomElementFromList(KNIGHT_PATTERN_IDS);
 
-        Integer idIndex = rng.nextInt(KNIGHT_PATTERN_IDS.length);
-
-        return KNIGHT_PATTERN_IDS[idIndex];
     }
 
     private void setupPlainKnights(char patternId) {
@@ -235,39 +231,14 @@ public class MainActivity extends FragmentActivity {
     }
 
     private List<Integer> randomizePatternedKnights() {
-        Random rng = new Random();
-        List<Integer> generated = new ArrayList<Integer>();
 
-        for(int i = 0; i < KNIGHTS_IN_PATTERN; i++) {
-            while(true) {
-                Integer next = rng.nextInt(TOTAL_KNIGHT_SPRITES);
-                if(!generated.contains(next)) {
-                    generated.add(next);
-                    break;
-                }
-            }
-        }
-
-        return generated;
+        return GameElementRandomizer.returnRndIntListFromIntBounds(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES);
 
     }
 
     private List<Integer> randomizePatternedShieldsInFrame(List<Integer> randomizedPatternedKnightsList) {
 
-        Random rng = new Random();
-        List<Integer> generated = new ArrayList<Integer>();
-
-        for(int i = 0; i < KNIGHTS_IN_PATTERN; i++) {
-            while(true) {
-                Integer next = rng.nextInt(TOTAL_KNIGHT_SPRITES);
-                if(!generated.contains(next) && randomizedPatternedKnightsList.contains(next)) {
-                    generated.add(next);
-                    break;
-                }
-            }
-        }
-
-        return generated;
+        return GameElementRandomizer.returnRndIntListIncludingElemsFromOtherList(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, randomizedPatternedKnightsList);
 
     }
 
@@ -331,7 +302,7 @@ public class MainActivity extends FragmentActivity {
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(keyPointer)) {
 
-            soundPoolPlayer.playShortResource(R.raw.correct);
+//            soundPoolPlayer.playShortResource(R.raw.correct);
 
             //change to plain knight
             ((AnimationDrawable) knight.getBackground()).stop();
@@ -356,7 +327,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         else {
-            soundPoolPlayer.playShortResource(R.raw.incorrect);
+//            soundPoolPlayer.playShortResource(R.raw.incorrect);
             decrementLives();
         }
     }
