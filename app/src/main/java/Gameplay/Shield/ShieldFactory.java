@@ -5,16 +5,12 @@ import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.example.thomas.kotr_android.MainActivity;
 import com.example.thomas.kotr_android.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -7,9 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-import com.example.thomas.kotr_android.MainActivity;
+import com.example.thomas.kotr_android.ArcadeModeActivity;
 import com.example.thomas.kotr_android.MainMenuActivity;
 import com.example.thomas.kotr_android.R;
+import com.example.thomas.kotr_android.TimeAttackModeActivity;
 
 import Gameplay.Sound.MediaPlayerPlayer;
 
@@ -20,9 +21,9 @@ import Gameplay.Sound.MediaPlayerPlayer;
 public class ReplayDialogFragment extends DialogFragment {
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
 
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         int score = bundle.getInt("SCORE");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppAlertTheme);
@@ -34,7 +35,14 @@ public class ReplayDialogFragment extends DialogFragment {
 
                 MediaPlayerPlayer mediaPlayerPlayer = new MediaPlayerPlayer();
                 mediaPlayerPlayer.pauseAudio();
-                Intent intent = new Intent(getContext(), MainActivity.class);
+
+                Intent intent = null;
+                if (bundle.getString("MODE").equals("arcade")) {
+                    intent = new Intent(getContext(), ArcadeModeActivity.class);
+                }
+                else if (bundle.getString("MODE").equals("timeAttack")) {
+                    intent = new Intent(getContext(), TimeAttackModeActivity.class);
+                }
                 startActivity(intent);
             }
         });

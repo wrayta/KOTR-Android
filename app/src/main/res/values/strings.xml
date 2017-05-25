@@ -4,6 +4,7 @@
     <string name="yes">Yes</string>
     <string name="returnToMenu">Return To Menu</string>
     <string name="title">Knights of the Round</string>
-    <string name="playArcadeMode">Arcade Mode</string>
+    <string name="playArcadeMode">Arcade</string>
     <string name="game_name">KOTR</string>
+    <string name="playTimeAttackMode">Time Attack</string>
 </resources>

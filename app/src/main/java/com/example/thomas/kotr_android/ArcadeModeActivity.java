@@ -26,7 +26,7 @@ import Gameplay.Timer.TimeFactory;
 import Logic.GameElementRandomizer;
 import Messages.ReplayDialogFragment;
 
-public class MainActivity extends FragmentActivity {
+public class ArcadeModeActivity extends FragmentActivity {
 
     //********************************************************************finals-start
 
@@ -75,7 +75,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_arcade_mode);
 
         // Screen Dimensions
         Display display = getWindowManager().getDefaultDisplay();
@@ -152,9 +152,7 @@ public class MainActivity extends FragmentActivity {
         setupPlainShieldsInFrame();
         char patternId = randomizeKnightPatternId();
         setupPlainKnights(patternId);
-        final List<Integer> patternedKnightsList = randomizePatternedKnights();
-        final List<Integer> patternedShieldsList = randomizePatternedShieldsInFrame(patternedKnightsList);
-        setupAnswerKey(patternedShieldsList);
+        setupAnswerKey();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable()
@@ -163,8 +161,10 @@ public class MainActivity extends FragmentActivity {
             public void run()
             {
                 setupTimer();
-                setupPatternedKnights(patternedKnightsList);
-                setupPatternedShieldsInFrame(patternedShieldsList);
+                key = randomizePatternedKnights(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, key);
+                setupPatternedKnights(key);
+                key = randomizePatternedShieldsInFrame(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, key);
+                setupPatternedShieldsInFrame(key);
                 timer.start();
             }
         }, 2000);
@@ -175,14 +175,14 @@ public class MainActivity extends FragmentActivity {
 
         final RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
-        timer = new CountDownTimer(10000, 1000) {
+        timer = new CountDownTimer(STARTING_TIME * 1000 + 1000, 1000) {
             public void onTick(long millisUntilFinished) {
 
                 ImageView oldTimeView = (ImageView) findViewById(R.id.timeView);
 
                 layout.removeView(oldTimeView);
 
-                TimeFactory timeFactory = new TimeFactory(MainActivity.this, time);
+                TimeFactory timeFactory = new TimeFactory(ArcadeModeActivity.this, time);
                 ImageView timeView = timeFactory.createTime();
 
                 layout.addView(timeView);
@@ -203,11 +203,6 @@ public class MainActivity extends FragmentActivity {
                 }, 1000);
             }
         };
-
-        TimeFactory timeFactory = new TimeFactory(this, time);
-        ImageView timeView = timeFactory.createTime();
-
-        layout.addView(timeView);
     }
 
     private void setupPlainShieldsInFrame() {
@@ -244,28 +239,24 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    private List<Integer> randomizePatternedKnights() {
+    private List<Integer> randomizePatternedKnights(int thingsToSelect, int allPossibleThings, List<Integer> key) {
 
-        return GameElementRandomizer.returnRndIntListFromIntBounds(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES);
-
-    }
-
-    private List<Integer> randomizePatternedShieldsInFrame(List<Integer> randomizedPatternedKnightsList) {
-
-        return GameElementRandomizer.returnRndIntListIncludingElemsFromOtherList(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, randomizedPatternedKnightsList);
+        return GameElementRandomizer.returnRndIntListFromIntBounds(thingsToSelect, allPossibleThings, key);
 
     }
 
-    private void setupAnswerKey(List<Integer> patternedShieldsList) {
+    private List<Integer> randomizePatternedShieldsInFrame(int thingsToSelect, int allPossibleThings, List<Integer> key) {
+
+        return GameElementRandomizer.returnRndIntListIncludingElemsFromOtherList(thingsToSelect, allPossibleThings, key);
+
+    }
+
+    private void setupAnswerKey() {
         keyPointer = 0;
         key = new ArrayList<Integer>();
-
-        for(int i = 0; i < patternedShieldsList.size(); i++) {
-            key.add(patternedShieldsList.get(i));
-        }
     }
 
-    private void setupPatternedShieldsInFrame(List<Integer> patternedShieldList) {
+    private void setupPatternedShieldsInFrame(List<Integer> key) {
         int[] allFrameShields = {R.drawable.shield_1, R.drawable.shield_2, R.drawable.shield_3,
                 R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
                 R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
@@ -276,7 +267,7 @@ public class MainActivity extends FragmentActivity {
 
         layout.removeView(plainShieldView);
 
-        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, patternedShieldList);
+        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, key);
         ImageView patternedShieldsView = shieldFactory.createShields();
 
         layout.addView(patternedShieldsView);
@@ -329,7 +320,7 @@ public class MainActivity extends FragmentActivity {
 
             keyPointer++;
 
-            updatePatternedShieldsInFrame();
+            updatePatternedShieldsInFrame(key);
 
             knight.setEnabled(false);
 
@@ -377,7 +368,7 @@ public class MainActivity extends FragmentActivity {
         layout.addView(scoreView);
     }
 
-    private void updatePatternedShieldsInFrame() {
+    private void updatePatternedShieldsInFrame(List<Integer> key) {
         int[] allFrameShields = {R.drawable.shield_1, R.drawable.shield_2, R.drawable.shield_3,
                 R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
                 R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
@@ -446,7 +437,8 @@ public class MainActivity extends FragmentActivity {
         ReplayDialogFragment replayDialogFragment = new ReplayDialogFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putInt("SCORE",score);
+        bundle.putInt("SCORE", score);
+        bundle.putString("MODE", "arcade");
         replayDialogFragment.setArguments(bundle);
         replayDialogFragment.show(getSupportFragmentManager(), "replay");
     }

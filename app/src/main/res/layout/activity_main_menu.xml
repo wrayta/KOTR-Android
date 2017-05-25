@@ -40,6 +40,23 @@
         android:textAllCaps="false"
         android:textColor="@android:color/black"
         android:textSize="12sp">
-
     </Button>
+
+    <Button
+        android:id="@+id/timeAttackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="@drawable/game_mode_button"
+        android:ems="5"
+        android:fontFamily="casual"
+        android:text="@string/playTimeAttackMode"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        android:layout_below="@+id/arcadeButton"
+        android:layout_alignLeft="@+id/arcadeButton"
+        android:layout_alignStart="@+id/arcadeButton"
+        android:layout_marginTop="27dp">
+    </Button>
+
 </RelativeLayout>
