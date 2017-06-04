@@ -87,7 +87,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
 
     private void doStartGame() {
         setupScore();
-//        setupSound();
+        setupSound();
         playLevel();
     }
 
@@ -117,7 +117,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
     }
 
     private void playLevel() {
-        setupPlainShieldsInFrame();
+        setupPlainShieldToFindInTopCorner();
         char patternId = randomizeKnightPatternId();
         setupPlainKnights(patternId);
         setupAnswerKey();
@@ -133,21 +133,20 @@ public class TimeAttackModeActivity extends FragmentActivity {
                 key = randomizePatternedKnights(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, key);
                 setupPatternedKnights(key);
                 key = randomizePatternedShieldsInFrame(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, key);
-                setupPatternedShieldsInFrame(key);
+                setupPatternedShieldToFindInTopCorner(key);
                 timer.start();
             }
         }, 2000);
     }
 
-    private void setupPlainShieldsInFrame() {
+    private void setupPlainShieldToFindInTopCorner() {
 
-        int[] plainShields = {R.drawable.plain_shield_v2, R.drawable.plain_shield_v2,
-                R.drawable.plain_shield_v2, R.drawable.plain_shield_v2, R.drawable.plain_shield_v2};
+        int[] plainShield = {R.drawable.plain_shield_v2};
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
-        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.plainShieldsView, plainShields);
-        ImageView plainShieldsView = shieldFactory.createShields();
+        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.plainShieldsView, plainShield);
+        ImageView plainShieldsView = shieldFactory.createShields(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.ALIGN_PARENT_RIGHT);
 
         layout.addView(plainShieldsView);
 
@@ -189,19 +188,21 @@ public class TimeAttackModeActivity extends FragmentActivity {
         key = new ArrayList<Integer>();
     }
 
-    private void setupPatternedShieldsInFrame(List<Integer> key) {
+    private void setupPatternedShieldToFindInTopCorner(List<Integer> key) {
         int[] allFrameShields = {R.drawable.shield_1, R.drawable.shield_2, R.drawable.shield_3,
                 R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
                 R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
+        int[] shieldToFind = {allFrameShields[key.get(0)]};
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
         ImageView plainShieldView = (ImageView) findViewById(R.id.plainShieldsView);
 
         layout.removeView(plainShieldView);
 
-        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, key);
-        ImageView patternedShieldsView = shieldFactory.createShields();
+        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, shieldToFind);
+        ImageView patternedShieldsView = shieldFactory.createShields(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.ALIGN_PARENT_RIGHT);
 
         layout.addView(patternedShieldsView);
     }
@@ -237,10 +238,36 @@ public class TimeAttackModeActivity extends FragmentActivity {
         }
     }
 
+    private void updatePatternedKnights(int knightId, Integer patternedKnightInt) {
+        Drawable[] allPatternedKnights =  {getResources().getDrawable(R.drawable.shield_1_animation),
+                getResources().getDrawable(R.drawable.shield_2_animation),
+                getResources().getDrawable(R.drawable.shield_3_animation),
+                getResources().getDrawable(R.drawable.shield_4_animation),
+                getResources().getDrawable(R.drawable.shield_5_animation),
+                getResources().getDrawable(R.drawable.shield_6_animation),
+                getResources().getDrawable(R.drawable.shield_7_animation),
+                getResources().getDrawable(R.drawable.shield_8_animation)};  // ALL OF THE POSSIBLE KNIGHT SPRITES TO LOAD
+
+        ImageView updatedKnight = (ImageView) findViewById(knightId);
+
+        updatedKnight.setBackground(allPatternedKnights[patternedKnightInt]);
+        ((AnimationDrawable) updatedKnight.getBackground()).start();
+
+        updatedKnight.setEnabled(true);
+        updatedKnight.setTag(patternedKnightInt);
+        updatedKnight.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                checkAgainstKey(view);
+            }
+        });
+    }
+
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(0)) {
 
-//            soundPoolPlayer.playShortResource(R.raw.correct);
+            soundPoolPlayer.playShortResource(R.raw.correct);
 
             ((AnimationDrawable) knight.getBackground()).stop();
 
@@ -252,19 +279,20 @@ public class TimeAttackModeActivity extends FragmentActivity {
             //choose a new shield not already in key
             key = GameElementRandomizer.returnRndIntListFromIntBounds(1, TOTAL_KNIGHT_SPRITES, key);
 
+            //replace clicked patternedKnight with new patternedKnight (end of key)
+            updatePatternedKnights(knight.getId(), key.get(key.size() - 1));
+
+            //otherwise, knight click pattern wouldn't change
+            key = GameElementRandomizer.shuffleKeyOrder(key);
+
             //display updated shields on screen
-            updatePatternedShieldsInFrame(key);
+            updatePatternedShieldToFindInTopCorner(key);
 
-            //randomize the knights from the key containing the new shield
-            List<Integer> randomizedPatternedKnights = GameElementRandomizer.returnRndIntListIncludingElemsFromOtherList(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, key);
-
-            //add the re-ordered knights to the screen
-            setupPatternedKnights(randomizedPatternedKnights);
 
         }
 
         else {
-//            soundPoolPlayer.playShortResource(R.raw.incorrect);
+            soundPoolPlayer.playShortResource(R.raw.incorrect);
         }
     }
 
@@ -283,19 +311,21 @@ public class TimeAttackModeActivity extends FragmentActivity {
         layout.addView(scoreView);
     }
 
-    private void updatePatternedShieldsInFrame(List<Integer> key) {
+    private void updatePatternedShieldToFindInTopCorner(List<Integer> key) {
         int[] allFrameShields = {R.drawable.shield_1, R.drawable.shield_2, R.drawable.shield_3,
                 R.drawable.shield_4, R.drawable.shield_5, R.drawable.shield_6,
                 R.drawable.shield_7, R.drawable.shield_8};         // ALL OF THE POSSIBLE SHIELD SPRITES TO LOAD
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
+        int[] shieldToFind = {allFrameShields[key.get(0)]};
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout);
 
         ImageView oldPatternedShieldsView = (ImageView) findViewById(R.id.patternedShieldsView);
 
         layout.removeView(oldPatternedShieldsView);
 
-        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, key);
-        ImageView patternedShieldsView = shieldFactory.createShields();
+        ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, shieldToFind);
+        ImageView patternedShieldsView = shieldFactory.createShields(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.ALIGN_PARENT_RIGHT);
 
         layout.addView(patternedShieldsView);
     }

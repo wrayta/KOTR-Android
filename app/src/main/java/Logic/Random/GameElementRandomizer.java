@@ -56,9 +56,23 @@ public class GameElementRandomizer {
         return generated;
     }
 
+    public static List<Integer> shuffleKeyOrder(List<Integer> key) {
+
+        Random rng = new Random();
+        List<Integer> shuffledKey = new ArrayList<Integer>();
+
+        while(!key.isEmpty()) {
+            Integer next = rng.nextInt(key.size());
+            shuffledKey.add((key.get(next)));
+            key.remove((int)next);
+        }
+
+        return shuffledKey;
+    }
+
     public static byte moveLeftToRightOrTopToBottom() {
 
-        final int NUM_OF_DIRECTIONS = 4; //LEFT-RIGHT, UP-DOWN
+        final int NUM_OF_DIRECTIONS = 4; //LEFT, RIGHT, UP, DOWN
 
         byte direction;
 
@@ -69,7 +83,4 @@ public class GameElementRandomizer {
         return direction;
     }
 
-//    public static byte moveLeftToRight() {
-//
-//    }
 }

@@ -213,7 +213,7 @@ public class ArcadeModeActivity extends FragmentActivity {
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.relative_layout_gold_frame);
 
         ShieldFactory shieldFactory = new ShieldFactory(this, R.id.plainShieldsView, plainShields);
-        ImageView plainShieldsView = shieldFactory.createShields();
+        ImageView plainShieldsView = shieldFactory.createShields(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.ALIGN_PARENT_BOTTOM);
 
         layout.addView(plainShieldsView);
 
@@ -268,7 +268,7 @@ public class ArcadeModeActivity extends FragmentActivity {
         layout.removeView(plainShieldView);
 
         ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, key);
-        ImageView patternedShieldsView = shieldFactory.createShields();
+        ImageView patternedShieldsView = shieldFactory.createShields(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.ALIGN_PARENT_BOTTOM);
 
         layout.addView(patternedShieldsView);
     }
@@ -380,7 +380,7 @@ public class ArcadeModeActivity extends FragmentActivity {
         layout.removeView(oldPatternedShieldsView);
 
         ShieldFactory shieldFactory = new ShieldFactory(this, R.id.patternedShieldsView, allFrameShields, key);
-        ImageView patternedShieldsView = shieldFactory.createShields(keyPointer);
+        ImageView patternedShieldsView = shieldFactory.createShields(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.ALIGN_PARENT_BOTTOM, keyPointer);
 
         layout.addView(patternedShieldsView);
     }

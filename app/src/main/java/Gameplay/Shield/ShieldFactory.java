@@ -46,11 +46,12 @@ public class ShieldFactory extends ContextWrapper {
         this.id = id;
     }
 
-    public ImageView createShields() {
+    public ImageView createShields(int alignment1, int alignment2) {
 
         ImageView shieldsView = new ImageView(this);
         RelativeLayout.LayoutParams shieldLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        shieldLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        shieldLayoutParams.addRule(alignment1);
+        shieldLayoutParams.addRule(alignment2);
 
         Bitmap[] shieldBitMaps = new Bitmap[shields.length];
 
@@ -74,10 +75,11 @@ public class ShieldFactory extends ContextWrapper {
         return shieldsView;
     }
 
-    public ImageView createShields(int keyPointer) {
+    public ImageView createShields(int alignment1, int alignment2, int keyPointer) {
         ImageView shieldsView = new ImageView(this);
         RelativeLayout.LayoutParams shieldLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        shieldLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        shieldLayoutParams.addRule(alignment1);
+        shieldLayoutParams.addRule(alignment2);
 
         Bitmap[] shieldBitMaps = new Bitmap[shields.length];
 
