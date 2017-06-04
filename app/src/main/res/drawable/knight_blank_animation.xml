@@ -3,19 +3,19 @@
     android:oneshot="false">
 
     <item
-        android:duration="500"
+        android:duration="250"
         android:drawable="@drawable/knight_blank_feet_left"/>
 
     <item
-        android:duration="500"
+        android:duration="250"
         android:drawable="@drawable/knight_blank_feet_even"/>
 
     <item
-        android:duration="500"
+        android:duration="250"
         android:drawable="@drawable/knight_blank_feet_right"/>
 
     <item
-        android:duration="500"
+        android:duration="250"
         android:drawable="@drawable/knight_blank_feet_even"/>
 
 </animation-list>

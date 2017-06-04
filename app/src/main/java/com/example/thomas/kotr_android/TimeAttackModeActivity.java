@@ -22,7 +22,8 @@ import Gameplay.Shield.ShieldFactory;
 import Gameplay.Sound.MediaPlayerPlayer;
 import Gameplay.Sound.SoundPoolPlayer;
 import Gameplay.Timer.TimeFactory;
-import Logic.GameElementRandomizer;
+import Logic.Movement.WalkingRunnable;
+import Logic.Random.GameElementRandomizer;
 import Messages.ReplayDialogFragment;
 
 public class TimeAttackModeActivity extends FragmentActivity {
@@ -86,7 +87,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
 
     private void doStartGame() {
         setupScore();
-        setupSound();
+//        setupSound();
         playLevel();
     }
 
@@ -128,6 +129,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
             public void run()
             {
                 setupTimer();
+                setupWalkTimer();
                 key = randomizePatternedKnights(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, key);
                 setupPatternedKnights(key);
                 key = randomizePatternedShieldsInFrame(KNIGHTS_IN_PATTERN, TOTAL_KNIGHT_SPRITES, key);
@@ -238,7 +240,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(0)) {
 
-            soundPoolPlayer.playShortResource(R.raw.correct);
+//            soundPoolPlayer.playShortResource(R.raw.correct);
 
             ((AnimationDrawable) knight.getBackground()).stop();
 
@@ -262,7 +264,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
         }
 
         else {
-            soundPoolPlayer.playShortResource(R.raw.incorrect);
+//            soundPoolPlayer.playShortResource(R.raw.incorrect);
         }
     }
 
@@ -298,6 +300,50 @@ public class TimeAttackModeActivity extends FragmentActivity {
         layout.addView(patternedShieldsView);
     }
 
+    private void setupWalkTimer() {
+
+        Handler handler = new Handler();
+
+        ImageView bottomLeftKnightView = (ImageView)findViewById(R.id.bottomLeftKnightView);
+        WalkingRunnable walkingRunnableKnight1 = new WalkingRunnable(handler, bottomLeftKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+
+        handler.post(walkingRunnableKnight1);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ImageView topLeftKnightView = (ImageView)findViewById(R.id.topLeftKnightView);
+        WalkingRunnable walkingRunnableKnight2 = new WalkingRunnable(handler, topLeftKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+
+        handler.post(walkingRunnableKnight2);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ImageView topCenterKnightView = (ImageView)findViewById(R.id.topCenterKnightView);
+        WalkingRunnable walkingRunnableKnight3 = new WalkingRunnable(handler, topCenterKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+
+        handler.post(walkingRunnableKnight3);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ImageView topRightKnightView = (ImageView)findViewById(R.id.topRightKnightView);
+        WalkingRunnable walkingRunnableKnight4 = new WalkingRunnable(handler, topRightKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+
+        handler.post(walkingRunnableKnight4);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ImageView bottomRightKnightView = (ImageView)findViewById(R.id.bottomRightKnightView);
+        WalkingRunnable walkingRunnableKnight5 = new WalkingRunnable(handler, bottomRightKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+
+        handler.post(walkingRunnableKnight5);
+
+    }
+
     private void setupTimer() {
         time = STARTING_TIME;
 
@@ -316,6 +362,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
                 layout.addView(timeView);
 
                 time--;
+
             }
 
             public void onFinish() {

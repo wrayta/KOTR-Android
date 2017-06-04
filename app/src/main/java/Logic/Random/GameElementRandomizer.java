@@ -1,4 +1,4 @@
-package Logic;
+package Logic.Random;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,4 +55,21 @@ public class GameElementRandomizer {
 
         return generated;
     }
+
+    public static byte moveLeftToRightOrTopToBottom() {
+
+        final int NUM_OF_DIRECTIONS = 4; //LEFT-RIGHT, UP-DOWN
+
+        byte direction;
+
+        Random rng = new Random();
+
+        direction = (byte)(rng.nextInt(NUM_OF_DIRECTIONS));
+
+        return direction;
+    }
+
+//    public static byte moveLeftToRight() {
+//
+//    }
 }

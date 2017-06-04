@@ -23,7 +23,7 @@ import Gameplay.Shield.ShieldFactory;
 import Gameplay.Sound.MediaPlayerPlayer;
 import Gameplay.Sound.SoundPoolPlayer;
 import Gameplay.Timer.TimeFactory;
-import Logic.GameElementRandomizer;
+import Logic.Random.GameElementRandomizer;
 import Messages.ReplayDialogFragment;
 
 public class ArcadeModeActivity extends FragmentActivity {
