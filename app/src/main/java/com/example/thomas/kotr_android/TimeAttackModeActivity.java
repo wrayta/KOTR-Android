@@ -87,7 +87,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
 
     private void doStartGame() {
         setupScore();
-        setupSound();
+//        setupSound();
         playLevel();
     }
 
@@ -267,7 +267,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
     private void checkAgainstKey(View knight) {
         if (knight.getTag() == key.get(0)) {
 
-            soundPoolPlayer.playShortResource(R.raw.correct);
+//            soundPoolPlayer.playShortResource(R.raw.correct);
 
             ((AnimationDrawable) knight.getBackground()).stop();
 
@@ -292,7 +292,7 @@ public class TimeAttackModeActivity extends FragmentActivity {
         }
 
         else {
-            soundPoolPlayer.playShortResource(R.raw.incorrect);
+//            soundPoolPlayer.playShortResource(R.raw.incorrect);
         }
     }
 
@@ -334,41 +334,56 @@ public class TimeAttackModeActivity extends FragmentActivity {
 
         Handler handler = new Handler();
 
+        ImageView[] knightsExceptBottomLeft = {(ImageView)findViewById(R.id.topLeftKnightView), (ImageView)findViewById(R.id.topCenterKnightView),
+                (ImageView)findViewById(R.id.topRightKnightView), (ImageView)findViewById(R.id.bottomRightKnightView)};
+
         ImageView bottomLeftKnightView = (ImageView)findViewById(R.id.bottomLeftKnightView);
-        WalkingRunnable walkingRunnableKnight1 = new WalkingRunnable(handler, bottomLeftKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
-                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+        WalkingRunnable walkingRunnableKnight1 = new WalkingRunnable(this, handler, bottomLeftKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height, knightsExceptBottomLeft);
 
         handler.post(walkingRunnableKnight1);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        ImageView[] knightsExceptTopLeft = {(ImageView)findViewById(R.id.bottomLeftKnightView), (ImageView)findViewById(R.id.topCenterKnightView),
+                (ImageView)findViewById(R.id.topRightKnightView), (ImageView)findViewById(R.id.bottomRightKnightView)};
+
         ImageView topLeftKnightView = (ImageView)findViewById(R.id.topLeftKnightView);
-        WalkingRunnable walkingRunnableKnight2 = new WalkingRunnable(handler, topLeftKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
-                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+        WalkingRunnable walkingRunnableKnight2 = new WalkingRunnable(this, handler, topLeftKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height, knightsExceptTopLeft);
 
         handler.post(walkingRunnableKnight2);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        ImageView[] knightsExceptTopCenter = {(ImageView)findViewById(R.id.bottomLeftKnightView), (ImageView)findViewById(R.id.topLeftKnightView),
+                (ImageView)findViewById(R.id.topRightKnightView), (ImageView)findViewById(R.id.bottomRightKnightView)};
+
         ImageView topCenterKnightView = (ImageView)findViewById(R.id.topCenterKnightView);
-        WalkingRunnable walkingRunnableKnight3 = new WalkingRunnable(handler, topCenterKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
-                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+        WalkingRunnable walkingRunnableKnight3 = new WalkingRunnable(this, handler, topCenterKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height, knightsExceptTopCenter);
 
         handler.post(walkingRunnableKnight3);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        ImageView[] knightsExceptTopRight = {(ImageView)findViewById(R.id.bottomLeftKnightView), (ImageView)findViewById(R.id.topLeftKnightView),
+                (ImageView)findViewById(R.id.topCenterKnightView), (ImageView)findViewById(R.id.bottomRightKnightView)};
+
         ImageView topRightKnightView = (ImageView)findViewById(R.id.topRightKnightView);
-        WalkingRunnable walkingRunnableKnight4 = new WalkingRunnable(handler, topRightKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
-                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+        WalkingRunnable walkingRunnableKnight4 = new WalkingRunnable(this, handler, topRightKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height, knightsExceptTopRight);
 
         handler.post(walkingRunnableKnight4);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        ImageView[] knightsExceptBottomRight = {(ImageView)findViewById(R.id.bottomLeftKnightView), (ImageView)findViewById(R.id.topLeftKnightView),
+                (ImageView)findViewById(R.id.topCenterKnightView), (ImageView)findViewById(R.id.topRightKnightView)};
+
         ImageView bottomRightKnightView = (ImageView)findViewById(R.id.bottomRightKnightView);
-        WalkingRunnable walkingRunnableKnight5 = new WalkingRunnable(handler, bottomRightKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
-                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height);
+        WalkingRunnable walkingRunnableKnight5 = new WalkingRunnable(this, handler, bottomRightKnightView, getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth()
+                ,getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight(), width, height, knightsExceptBottomRight);
 
         handler.post(walkingRunnableKnight5);
 
