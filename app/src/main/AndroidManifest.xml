@@ -9,14 +9,16 @@
         android:roundIcon="@mipmap/knight_launcher"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar">
-        <activity android:name=".MainMenuActivity">
+        <activity android:name=".MainMenuActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ArcadeModeActivity">
+        <activity android:name=".ArcadeModeActivity"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -25,7 +27,9 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".TimeAttackModeActivity"></activity>
+        <activity android:name=".TimeAttackModeActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

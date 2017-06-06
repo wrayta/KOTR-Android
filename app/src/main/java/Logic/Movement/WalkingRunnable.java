@@ -90,41 +90,44 @@ public class WalkingRunnable extends ContextWrapper implements Runnable {
     }
 
     private void moveLeft() {
-
         if(checkLeftScreenBounds()) {
-            if(!intersectsImageView()) {
+
+            if(!willIntersectImageView(LEFT)) {
                 layoutParams.leftMargin = (int) (knightXCoord - X_MOVEMENT_INTERVAL);
 
                 knight.setLayoutParams(layoutParams);
-            } else {
-                reverseDirection(LEFT);
             }
+//            else {
+//                reverseDirection(LEFT);
+//            }
         }
     }
 
     private void moveRight() {
         if(checkRightScreenBounds()) {
 
-            if(!intersectsImageView()) {
+            if(!willIntersectImageView(RIGHT)) {
                 layoutParams.leftMargin = (int) (knightXCoord + X_MOVEMENT_INTERVAL);
 
                 knight.setLayoutParams(layoutParams);
-            } else {
-                reverseDirection(RIGHT);
             }
+//            else {
+//                reverseDirection(RIGHT);
+//            }
         }
     }
 
     private void moveUp() {
         if(checkTopScreenBounds()) {
 
-            if(!intersectsImageView()) {
+            if(!willIntersectImageView(UP)) {
                 layoutParams.topMargin = (int) (knightYCoord - Y_MOVEMENT_INTERVAL);
 
                 knight.setLayoutParams(layoutParams);
-            } else {
-                reverseDirection(UP);
             }
+//            else {
+//                reverseDirection(UP);
+//            }
 
         }
     }
@@ -132,51 +135,80 @@ public class WalkingRunnable extends ContextWrapper implements Runnable {
     private void moveDown() {
         if(checkBottomScreenBounds()) {
 
-            if(!intersectsImageView()) {
-                layoutParams.topMargin = (int) (knightYCoord + Y_MOVEMENT_INTERVAL);
-
-                knight.setLayoutParams(layoutParams);
-            } else {
-                reverseDirection(DOWN);
-            }
-        }
-    }
-
-    private void reverseDirection(byte direction) {
-
-        if(direction == LEFT) { //move right now
-
-            if(checkRightScreenBounds()) {
-                layoutParams.leftMargin = (int) (knightXCoord + X_MOVEMENT_INTERVAL);
-
-                knight.setLayoutParams(layoutParams);
-            }
-
-        } else if(direction == RIGHT) { //move left now
-
-            if(checkLeftScreenBounds()) {
-                layoutParams.leftMargin = (int) (knightXCoord - X_MOVEMENT_INTERVAL);
-
-                knight.setLayoutParams(layoutParams);
-            }
-
-        } else if(direction == UP) { //move down now
-
-            if(checkBottomScreenBounds()) {
+            if(!willIntersectImageView(DOWN)) {
                 layoutParams.topMargin = (int) (knightYCoord + Y_MOVEMENT_INTERVAL);
 
                 knight.setLayoutParams(layoutParams);
             }
-
-        } else if(direction == DOWN) { //move up now
-
-            if(checkTopScreenBounds()) {
-                layoutParams.topMargin = (int) (knightYCoord - Y_MOVEMENT_INTERVAL);
-
-                knight.setLayoutParams(layoutParams);
-            }
+//            else {
+//                reverseDirection(DOWN);
+//            }
         }
     }
+
+//    private void reverseDirection(byte direction) {
+//
+//        if(direction == LEFT) { //move right now
+//
+//            if(checkRightScreenBounds()) {
+//                if(!willIntersectImageView(RIGHT)) {
+//                    layoutParams.leftMargin = (int) (knightXCoord + X_MOVEMENT_INTERVAL);
+//
+//                    knight.setLayoutParams(layoutParams);
+//                } else {
+//                    reverseDirection(RIGHT);
+//                }
+//            }
+////            else {
+////                reverseDirection(RIGHT);
+////            }
+//
+//        } else if(direction == RIGHT) { //move left now
+//
+//            if(checkLeftScreenBounds()) {
+//                if(!willIntersectImageView(LEFT)) {
+//                    layoutParams.leftMargin = (int) (knightXCoord - X_MOVEMENT_INTERVAL);
+//
+//                    knight.setLayoutParams(layoutParams);
+//                } else {
+//                    reverseDirection(LEFT);
+//                }
+//            }
+////            else {
+////                reverseDirection(LEFT);
+////            }
+//
+//        } else if(direction == UP) { //move down now
+//
+//            if(checkBottomScreenBounds()) {
+//                if(!willIntersectImageView(DOWN)) {
+//                    layoutParams.topMargin = (int) (knightYCoord + Y_MOVEMENT_INTERVAL);
+//
+//                    knight.setLayoutParams(layoutParams);
+//                } else {
+//                    reverseDirection(DOWN);
+//                }
+//            }
+////            else {
+////                reverseDirection(DOWN);
+////            }
+//
+//        } else if(direction == DOWN) { //move up now
+//
+//            if(checkTopScreenBounds()) {
+//                if(!willIntersectImageView(UP)) {
+//                    layoutParams.topMargin = (int) (knightYCoord - Y_MOVEMENT_INTERVAL);
+//
+//                    knight.setLayoutParams(layoutParams);
+//                } else {
+//                    reverseDirection(UP);
+//                }
+//            }
+////            else {
+////                reverseDirection(UP);
+////            }
+//        }
+//    }
 
     private boolean checkLeftScreenBounds() {
         return (knightXCoord - X_MOVEMENT_INTERVAL >= (0 + knightWidth));
@@ -194,21 +226,34 @@ public class WalkingRunnable extends ContextWrapper implements Runnable {
         return ((knightYCoord + Y_MOVEMENT_INTERVAL) <= (screenHeight - knightHeight));
     }
 
-    private boolean intersectsImageView() {
+    private boolean willIntersectImageView(byte direction) {
+
         boolean intersects = false;
 
         final int[] loc = new int[2];
 
-//        knight.getLocationOnScreen(loc);
+        Rect movingKnightsBounds = null;
 
-        final Rect movingKnightsBounds = new Rect((int)(knightXCoord), (int)(knightYCoord),
-                (int)(knightXCoord) + knightWidth, (int)(knightYCoord) + knightHeight);
+        if (direction == LEFT) {
+            movingKnightsBounds = new Rect((int) (knightXCoord - X_MOVEMENT_INTERVAL), (int) (knightYCoord),
+                    (int) (knightXCoord - X_MOVEMENT_INTERVAL) + knightWidth, (int) (knightYCoord) + knightHeight);
+        } else if (direction == RIGHT) {
+            movingKnightsBounds = new Rect((int) (knightXCoord + X_MOVEMENT_INTERVAL), (int) (knightYCoord),
+                    (int) (knightXCoord + X_MOVEMENT_INTERVAL) + knightWidth, (int) (knightYCoord) + knightHeight);
+        } else if (direction == UP) {
+            movingKnightsBounds = new Rect((int) (knightXCoord), (int) (knightYCoord - Y_MOVEMENT_INTERVAL),
+                    (int) (knightXCoord) + knightWidth, (int) (knightYCoord - Y_MOVEMENT_INTERVAL) + knightHeight);
+        } else if (direction == DOWN) {
+            movingKnightsBounds = new Rect((int) (knightXCoord), (int) (knightYCoord + Y_MOVEMENT_INTERVAL),
+                    (int) (knightXCoord) + knightWidth, (int) (knightYCoord + Y_MOVEMENT_INTERVAL) + knightHeight);
+        }
 
         for(int i = 0; i < knights.length; i++) {
             knights[i].getLocationOnScreen(loc);
             Rect knightsBound = new Rect(loc[0], loc[1],
                     loc[0] + getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicWidth(),
                     loc[1] + getResources().getDrawable(R.drawable.knight_three_intro_resized_v2).getIntrinsicHeight());
+
 
             if(Rect.intersects(movingKnightsBounds, knightsBound)) {
                 intersects = true;
